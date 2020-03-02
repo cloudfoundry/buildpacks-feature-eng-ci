@@ -5,13 +5,13 @@ resources:
   source:
     uri: git@github.com:pivotal/feller.git
     branch: master
-    private_key: {{feller-deploy-key}}
+    private_key: ((feller-private-key))
 
 - name: buildpacks-ci
   type: git
   source:
-    uri: {{buildpacks-ci-git-uri-public}}
-    branch: {{buildpacks-ci-git-uri-public-branch}}
+    uri: https://github.com/cloudfoundry/buildpacks-feature-eng-ci
+    branch: master
 
 - name: once-a-day
   type: time
@@ -53,5 +53,5 @@ jobs:
     file: buildpacks-ci/tasks/feller/run/task.yml
     params:
       TRACKER_PROJECT: 1042066
-      TRACKER_TOKEN: {{pivotal-tracker-api-token}}
-      GITHUB_TOKEN: {{buildpacks-github-token}}
+      TRACKER_TOKEN: ((pivotal-tracker-api-token))
+      GITHUB_TOKEN: ((buildpacks-github-token))
