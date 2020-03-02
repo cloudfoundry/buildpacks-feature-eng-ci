@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "$0")" && cd .. && pwd)"
+include_pipelines=
+
+parse_arguments() {
+  local OPTIND
+  while getopts "i:" opt; do
+    case "${opt}" in
+      i)
+        include_pipelines="${OPTARG}"
+        ;;
+      *)
+        echo "Usage: $0 [-i <substring-to-include>]"
+        exit 1
+        ;;
+    esac
+  done
+}
+
+update_feller_pipeline() {
+  pipeline_name="feller"
+  if ! contains_substring "$pipeline_name" "$include_pipelines"; then
+    return
+  fi
+
+  loud_echo "Updating $pipeline_name"
+
+  pipeline_config="$(erb "$repo_root/pipelines/feller.yml")"
+
+  fly -t buildpacks set-pipeline \
+    -p "$pipeline_name" \
+    -c <(echo "$pipeline_config")
+}
+
+contains_substring() {
+  string=$1
+  substring=$2
+  grep -qi "$substring" <(echo "$string")
+}
+
+loud_echo() {
+  printf "############################################################\n"
+  printf "#                                                          #\n"
+  printf "# %-56s #\n" "$1"
+  printf "#                                                          #\n"
+  printf "############################################################\n"
+}
+
+is_feature_eng_team() {
+  local current_team
+  current_team="$(yq r ~/.flyrc targets.buildpacks.team)"
+  if ! contains_substring "$(yq r ~/.flyrc targets.buildpacks.team)" "feature-eng" ; then
+    loud_echo "Refusing to run update_pipelines"
+    echo $'Please log in as the "feature-eng" team using:\nfly -t buildpacks login -n feature-eng'
+    exit 1
+  fi
+  return
+}
+
+main() {
+  is_feature_eng_team
+  parse_arguments "$@"
+
+  if [[ -n "$include_pipelines" ]]; then
+    loud_echo "Updating pipelines matching '$include_pipelines'"
+  fi
+
+ update_feller_pipeline
+}
+
+main "$@"
