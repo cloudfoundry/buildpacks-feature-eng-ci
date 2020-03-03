@@ -76,6 +76,7 @@ jobs:
     - get: ci
     - get: minimal-image
       trigger: true
+      passed: [build-minimal-image]
     - get: gcloud-dockerfile
       trigger: true
   - task: build
