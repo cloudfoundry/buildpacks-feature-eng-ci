@@ -1,5 +1,12 @@
 ---
 resources:
+- name: ci
+  type: git
+  icon: github
+  source:
+    uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
+    branch: master
+
 - name: ubuntu-image
   type: registry-image
   icon: docker
