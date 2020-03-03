@@ -53,4 +53,4 @@ jobs:
     file: ci/tasks/interrupt-bot/deploy/task.yml
     params:
       SLACK_TOKEN: ((interrupt-bot-slack-token))
-      PAIRIST_PASSWORD: ((pairist-password))
+      PAIRIST_PASSWORD: ((pairist-account.password))
