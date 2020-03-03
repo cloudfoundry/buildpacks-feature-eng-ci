@@ -1,0 +1,27 @@
+---
+delegatebot:
+  watch:
+  - target: { channel: &buildpacks CULAS8ACD }
+
+  delegate:
+    if:
+      when:
+      - hours: { tz: America/New_York, start: 09:00, end: 17:00 }
+      - day: { tz: America/New_York, days: [ Mon, Tue, Wed, Thu, Fri ] }
+
+      then:
+        literalmap:
+          from:
+            pairist:
+              team: cfbuildpacks
+              role: Interrupt
+              password: $PAIRIST_PASSWORD
+
+          users:
+            Ryan: UU7GFH87L
+            Dan: UU7HVRK26
+            Tim: UULCH0VUM
+            Forest: UUA8LQ3QR
+
+  options:
+    empty_message: "Sorry, no interrupt is available right now. Perhaps try again later if you don't get a response sooner."
