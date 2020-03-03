@@ -1,0 +1,38 @@
+---
+resources:
+- name: ci
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
+    branch: master
+
+- name: image
+  type: registry-image
+  icon: oci
+  source:
+    repository: gcr.io/cf-buildpacks/slack-delegate-bot
+    username: _json_key
+    password: ((gcp-service-account-key))
+
+jobs:
+- name: build-and-push
+  plan:
+  - get: ci
+  - task: build
+    file: ci/tasks/build-image/task.yml
+    privileged: true
+    params:
+      CONTEXT: ci/tasks/interrupt-bot/build
+  - put: image
+    params:
+      image: image/image.tar
+
+- name: deploy
+  plan:
+  - get: ci
+  - task: deploy
+    file: ci/tasks/interrupt-bot/deploy/task.yml
+    params:
+      SLACK_TOKEN: ((interrupt-bot-slack-token))
+      PAIRIST_PASSWORD: ((pairist-password))
