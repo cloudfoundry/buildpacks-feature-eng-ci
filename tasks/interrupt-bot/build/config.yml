@@ -2,6 +2,15 @@
 delegatebot:
   watch:
   - target: { channel: &buildpacks CULAS8ACD }
+  - target: { channel: &dotnet-core CUD6SEE7L }
+  - target: { channel: &go CUEGB5FD1 }
+  - target: { channel: &httpd CURGW4XNY }
+  - target: { channel: &nginx CUFT85E9X }
+  - target: { channel: &nodejs CUD6R3CPL }
+  - target: { channel: &php CUD6TBJAE }
+  - target: { channel: &python CUD6UTCJW }
+  - target: { channel: &r-language CUD6ZGUMQ }
+  - target: { channel: &ruby CURGNPSTE }
 
   delegate:
     if:
