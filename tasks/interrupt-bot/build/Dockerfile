@@ -13,3 +13,5 @@ RUN curl \
   && chmod +x /bin/delegatebot
 
 COPY config.yml /etc/config.yml
+
+CMD delegatebot --config /etc/config.yml run

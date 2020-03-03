@@ -13,7 +13,7 @@ resources:
   source:
     repository: gcr.io/cf-buildpacks/slack-delegate-bot
     username: _json_key
-    password: ((gcp-service-account-key))
+    password: ((interrupt-bot-service-account-key))
 
 - name: configuration
   type: git
@@ -54,3 +54,4 @@ jobs:
     params:
       SLACK_TOKEN: ((interrupt-bot-slack-token))
       PAIRIST_PASSWORD: ((pairist-account.password))
+      SERVICE_ACCOUNT_KEY: ((interrupt-bot-service-account-key))

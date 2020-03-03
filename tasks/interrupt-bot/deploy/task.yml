@@ -13,6 +13,7 @@ inputs:
 params:
   SLACK_TOKEN:
   PAIRIST_PASSWORD:
+  SERVICE_ACCOUNT_KEY:
 
 run:
   path: ci/tasks/interrupt-bot/deploy/run.sh
