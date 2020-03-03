@@ -7,7 +7,7 @@ image_resource:
     repository: vito/oci-build-task
 
 inputs:
-- name: ci
+- name: source
 
 outputs:
 - name: image

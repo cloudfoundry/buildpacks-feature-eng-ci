@@ -2,7 +2,7 @@
 resources:
 - name: ci
   type: git
-  icon: github
+  icon: github-circle
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
@@ -25,7 +25,7 @@ resources:
 
 - name: minimal-dockerfile
   type: git
-  icon: github
+  icon: github-circle
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
@@ -44,6 +44,8 @@ jobs:
   - task: build
     file: ci/tasks/build-image/task.yml
     privileged: true
+    input_mapping:
+      source: minimal-dockerfile
     params:
       CONTEXT: minimal-dockerfile/dockerfiles/minimal.Dockerfile
   - put: minimal-image
