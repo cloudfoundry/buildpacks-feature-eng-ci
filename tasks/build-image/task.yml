@@ -14,6 +14,7 @@ outputs:
 
 params:
   CONTEXT:
+  DOCKERFILE:
 
 run:
   path: build
