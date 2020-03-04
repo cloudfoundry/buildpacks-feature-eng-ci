@@ -10,7 +10,7 @@ function main() {
   cf auth "${CLIENT_ID}" "${CLIENT_SECRET}" --client-credentials
   cf target -o "${ORG}" -s "${SPACE}"
 
-  cf push "${APP}" -p "${APP_PATH}" --no-start
+  cf push "${APP}" -p "${APP_PATH}" --no-start -b go_buildpack
   cf set-env "${APP}" INVITE_URL "${INVITE_URL}"
   cf start "${APP}"
 }
