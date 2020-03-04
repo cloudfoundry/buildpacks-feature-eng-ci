@@ -6,6 +6,7 @@ resources:
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
+    paths:
     - tasks/slack-invitations/*
     - tasks/build-image/*
 
@@ -22,7 +23,6 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: source
       trigger: true
   - task: build
     file: ci/tasks/build-image/task.yml
