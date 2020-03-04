@@ -1,0 +1,23 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: cfbuildpacks/feature-eng-ci
+    tag: cf
+
+inputs:
+- name: ci
+- name: source
+
+params:
+  INVITE_URL:
+  CLIENT_ID:
+  CLIENT_SECRET:
+  ORG: cf-buildpacks
+  SPACE: slack-invitations
+  APP: slack-invitations
+
+run:
+  path: ci/tasks/slack-invitations/deploy/run.sh

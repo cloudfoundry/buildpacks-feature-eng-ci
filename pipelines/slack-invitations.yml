@@ -1,0 +1,31 @@
+---
+resources:
+- name: ci
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
+    branch: master
+
+- name: source
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
+    branch: master
+    paths:
+    - tasks/slack-invitations/*
+
+jobs:
+- name: deploy
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: source
+      trigger: true
+      - task: deploy
+      file: ci/tasks/slack-invitations/deploy/task.yml
+      params:
+        CLIENT_ID: ((pws-client-credentials.username))
+        CLIENT_SECRET: ((pws-client-credentials.password))
+        INVITE_URL: ((slack-invite-url))

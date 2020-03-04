@@ -22,7 +22,7 @@ resources:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
     paths:
-    - tasks/interrupt-bot/build*
+    - tasks/interrupt-bot/build/*
 
 jobs:
 - name: build-and-push
