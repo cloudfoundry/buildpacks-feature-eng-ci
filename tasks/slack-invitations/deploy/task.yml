@@ -18,6 +18,8 @@ params:
   ORG: cf-buildpacks
   SPACE: paketo
   APP: slack-invitations
+  DOMAIN: paketo.io
+  SUBDOMAIN: slack
 
 run:
   path: ci/tasks/slack-invitations/deploy/run.sh

@@ -12,6 +12,7 @@ function main() {
 
   cf push "${APP}" -p "${APP_PATH}" --no-start -b go_buildpack
   cf set-env "${APP}" INVITE_URL "${INVITE_URL}"
+  cf map-route "${APP}" "${DOMAIN}" --hostname "${SUBDOMAIN}"
   cf start "${APP}"
 }
 
