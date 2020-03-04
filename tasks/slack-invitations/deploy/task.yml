@@ -9,17 +9,10 @@ image_resource:
 
 inputs:
 - name: ci
-- name: source
 
 params:
   INVITE_URL:
-  CLIENT_ID:
-  CLIENT_SECRET:
-  ORG: cf-buildpacks
-  SPACE: paketo
-  APP: slack-invitations
-  DOMAIN: paketo.io
-  SUBDOMAIN: slack
+  SERVICE_ACCOUNT_KEY:
 
 run:
   path: ci/tasks/slack-invitations/deploy/run.sh

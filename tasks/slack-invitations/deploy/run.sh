@@ -3,17 +3,22 @@
 set -eu
 set -o pipefail
 
-readonly APP_PATH="${PWD}/source/tasks/slack-invitations/app"
-
 function main() {
-  cf api api.run.pivotal.io
-  cf auth "${CLIENT_ID}" "${CLIENT_SECRET}" --client-credentials
-  cf target -o "${ORG}" -s "${SPACE}"
+  local project
+  project="$(echo "${SERVICE_ACCOUNT_KEY}" | jq -r .project_id)"
 
-  cf push "${APP}" -p "${APP_PATH}" --no-start -b go_buildpack
-  cf set-env "${APP}" INVITE_URL "${INVITE_URL}"
-  cf map-route "${APP}" "${DOMAIN}" --hostname "${SUBDOMAIN}"
-  cf start "${APP}"
+  gcloud auth activate-service-account \
+    --key-file <(echo "${SERVICE_ACCOUNT_KEY}")
+
+  gcloud run deploy slack-invitations \
+    --image gcr.io/cf-buildpacks/slack-invitations:latest \
+    --max-instances 1 \
+    --memory "128Mi" \
+    --platform managed \
+    --set-env-vars "INVITE_URL=${INVITE_URL}" \
+    --allow-unauthenticated \
+    --project "${project}" \
+    --region us-central1
 }
 
 main "${@}"
