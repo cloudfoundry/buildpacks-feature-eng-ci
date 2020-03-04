@@ -16,7 +16,7 @@ params:
   CLIENT_ID:
   CLIENT_SECRET:
   ORG: cf-buildpacks
-  SPACE: slack-invitations
+  SPACE: paketo
   APP: slack-invitations
 
 run:

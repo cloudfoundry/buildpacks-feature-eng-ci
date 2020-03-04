@@ -23,9 +23,9 @@ jobs:
     - get: ci
     - get: source
       trigger: true
-      - task: deploy
-      file: ci/tasks/slack-invitations/deploy/task.yml
-      params:
-        CLIENT_ID: ((pws-client-credentials.username))
-        CLIENT_SECRET: ((pws-client-credentials.password))
-        INVITE_URL: ((slack-invite-url))
+  - task: deploy
+    file: ci/tasks/slack-invitations/deploy/task.yml
+    params:
+      CLIENT_ID: ((pws-client-credentials.username))
+      CLIENT_SECRET: ((pws-client-credentials.password))
+      INVITE_URL: ((slack-invite-url))
