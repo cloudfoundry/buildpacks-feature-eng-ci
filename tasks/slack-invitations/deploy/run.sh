@@ -4,13 +4,14 @@ set -eu
 set -o pipefail
 
 function main() {
-  local project
+  local project service
   project="$(echo "${SERVICE_ACCOUNT_KEY}" | jq -r .project_id)"
+  service="slack-invitations"
 
   gcloud auth activate-service-account \
     --key-file <(echo "${SERVICE_ACCOUNT_KEY}")
 
-  gcloud run deploy slack-invitations \
+  gcloud run deploy "${service}" \
     --image gcr.io/cf-buildpacks/slack-invitations:latest \
     --max-instances 1 \
     --memory "128Mi" \
@@ -19,6 +20,10 @@ function main() {
     --allow-unauthenticated \
     --project "${project}" \
     --region us-central1
+
+  gcloud beta run domain-mappings create \
+    --service "${service}" \
+    --domain "${DOMAIN}"
 }
 
 main "${@}"

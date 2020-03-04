@@ -13,6 +13,7 @@ inputs:
 params:
   INVITE_URL:
   SERVICE_ACCOUNT_KEY:
+  DOMAIN: slack.paketo.io
 
 run:
   path: ci/tasks/slack-invitations/deploy/run.sh
