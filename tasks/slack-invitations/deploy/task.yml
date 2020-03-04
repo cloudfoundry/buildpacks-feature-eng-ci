@@ -12,7 +12,7 @@ inputs:
 - name: source
 
 params:
-  APP_TOKEN:
+  INVITE_URL:
   CLIENT_ID:
   CLIENT_SECRET:
   ORG: cf-buildpacks

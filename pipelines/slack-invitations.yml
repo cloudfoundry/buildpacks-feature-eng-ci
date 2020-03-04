@@ -28,4 +28,4 @@ jobs:
     params:
       CLIENT_ID: ((pws-client-credentials.username))
       CLIENT_SECRET: ((pws-client-credentials.password))
-      APP_TOKEN: ((slack-invite-token))
+      INVITE_URL: ((slack-invite-url))
