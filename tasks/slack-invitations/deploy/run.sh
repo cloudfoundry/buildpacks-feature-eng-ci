@@ -10,8 +10,8 @@ function main() {
   cf auth "${CLIENT_ID}" "${CLIENT_SECRET}" --client-credentials
   cf target -o "${ORG}" -s "${SPACE}"
 
-  cf push "${APP}" -p "${APP_PATH}" --no-start -b go_buildpack
-  cf set-env "${APP}" INVITE_URL "${INVITE_URL}"
+  cf push "${APP}" -p "${APP_PATH}" --no-start -b nodejs_buildpack
+  cf set-env "${APP}" APP_TOKEN "${APP_TOKEN}"
   cf map-route "${APP}" "${DOMAIN}" --hostname "${SUBDOMAIN}"
   cf start "${APP}"
 }
