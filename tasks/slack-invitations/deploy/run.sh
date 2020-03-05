@@ -10,6 +10,7 @@ function main() {
 
   gcloud auth activate-service-account \
     --key-file <(echo "${SERVICE_ACCOUNT_KEY}")
+  gcloud config set project "${project}"
 
   gcloud run deploy "${service}" \
     --image gcr.io/cf-buildpacks/slack-invitations:latest \
@@ -18,12 +19,7 @@ function main() {
     --platform managed \
     --set-env-vars "INVITE_URL=${INVITE_URL}" \
     --allow-unauthenticated \
-    --project "${project}" \
     --region us-central1
-
-  gcloud beta run domain-mappings create \
-    --service "${service}" \
-    --domain "${DOMAIN}"
 }
 
 main "${@}"
