@@ -5,7 +5,7 @@ resources:
   source:
     uri: git@github.com:pivotal/feller.git
     branch: master
-    private_key: ((feller-private-key))
+    private_key: ((feller-private-key.private_key))
 
 - name: buildpacks-ci
   type: git
