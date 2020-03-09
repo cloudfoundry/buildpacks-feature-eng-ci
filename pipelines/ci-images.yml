@@ -32,6 +32,15 @@ resources:
     username: ((dockerhub-account.username))
     password: ((dockerhub-account.password))
 
+- name: go-image
+  type: registry-image
+  icon: docker
+  source:
+    repository: cfbuildpacks/feature-eng-ci
+    tag: go
+    username: ((dockerhub-account.username))
+    password: ((dockerhub-account.password))
+
 - name: cf-image
   type: registry-image
   icon: docker
@@ -49,6 +58,15 @@ resources:
     branch: master
     paths:
     - dockerfiles/minimal.Dockerfile
+
+- name: go-dockerfile
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
+    branch: master
+    paths:
+    - dockerfiles/go.Dockerfile
 
 - name: gcloud-dockerfile
   type: git
@@ -85,6 +103,26 @@ jobs:
     params:
       DOCKERFILE: source/dockerfiles/minimal.Dockerfile
   - put: minimal-image
+    params:
+      image: image/image.tar
+
+- name: build-go-image
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: minimal-image
+      trigger: true
+      passed: [build-minimal-image]
+    - get: go-dockerfile
+      trigger: true
+  - task: build
+    file: ci/tasks/build-image/task.yml
+    privileged: true
+    input_mapping:
+      source: go-dockerfile
+    params:
+      DOCKERFILE: source/dockerfiles/go.Dockerfile
+  - put: go-image
     params:
       image: image/image.tar
 

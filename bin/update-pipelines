@@ -20,15 +20,15 @@ parse_arguments() {
   done
 }
 
-update_feller_pipeline() {
-  pipeline_name="feller"
+update_pipeline() {
+  pipeline_name="$1"
   if ! contains_substring "$pipeline_name" "$include_pipelines"; then
     return
   fi
 
   loud_echo "Updating $pipeline_name"
 
-  pipeline_config="$(erb "$repo_root/pipelines/feller.yml")"
+  pipeline_config="$(erb "$repo_root/pipelines/${1}.yml")"
 
   fly -t buildpacks set-pipeline \
     -p "$pipeline_name" \
@@ -68,7 +68,8 @@ main() {
     loud_echo "Updating pipelines matching '$include_pipelines'"
   fi
 
- update_feller_pipeline
+ update_pipeline feller
+ update_pipeline ci-images
 }
 
 main "$@"
