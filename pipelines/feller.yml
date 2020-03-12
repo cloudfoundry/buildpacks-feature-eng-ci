@@ -2,19 +2,24 @@
 resources:
 - name: feller
   type: git
+  icon: github-circle
   source:
     uri: git@github.com:pivotal/feller.git
     branch: master
     private_key: ((feller-private-key.private_key))
 
-- name: buildpacks-ci
+- name: ci
   type: git
+  icon: github-circle
   source:
     uri: https://github.com/cloudfoundry/buildpacks-feature-eng-ci
     branch: master
+    paths:
+    - tasks/feller/*
 
 - name: once-a-day
   type: time
+  icon: alarm
   source:
     start: 8:00 AM
     stop: 9:00 AM
@@ -24,33 +29,33 @@ jobs:
 - name: tests
   plan:
   - in_parallel:
+    - get: ci
     - get: feller
       trigger: true
-    - get: buildpacks-ci
   - task: tests
-    file: buildpacks-ci/tasks/feller/tests/task.yml
+    file: ci/tasks/feller/tests/task.yml
 
 - name: release
   plan:
   - in_parallel:
+    - get: ci
     - get: feller
       trigger: true
       passed: [tests]
-    - get: buildpacks-ci
   - task: tests
-    file: buildpacks-ci/tasks/feller/release/task.yml
+    file: ci/tasks/feller/release/task.yml
 
 - name: run
   plan:
   - in_parallel:
+    - get: ci
     - get: feller
       trigger: true
       passed: [release]
-    - get: buildpacks-ci
     - get: once-a-day
       trigger: true
   - task: run
-    file: buildpacks-ci/tasks/feller/run/task.yml
+    file: ci/tasks/feller/run/task.yml
     params:
       TRACKER_PROJECT: 1042066
       TRACKER_TOKEN: ((pivotal-tracker-api-token))

@@ -2,19 +2,17 @@
 platform: linux
 
 image_resource:
-  type: docker-image
+  type: registry-image
   source:
-    repository: cfbuildpacks/ci
+    repository: cfbuildpacks/feature-eng-ci
+    tag: go
 
 inputs:
-- name: buildpacks-ci
+- name: ci
 - name: feller
 
 run:
-  path: bash
-  args:
-  - -cl
-  - buildpacks-ci/tasks/feller/run/task.sh
+  path: ci/tasks/feller/run/task.sh
 
 params:
   TRACKER_PROJECT:
