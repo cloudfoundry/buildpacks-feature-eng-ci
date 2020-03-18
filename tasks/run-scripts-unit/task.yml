@@ -15,4 +15,4 @@ params:
   RUN_UNPRIVILEGED: false
 
 run:
-  path: buildpacks-ci/tasks/run-scripts-unit/run.sh
+  path: ci/tasks/run-scripts-unit/run.sh
