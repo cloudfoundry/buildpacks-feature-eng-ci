@@ -74,3 +74,10 @@ jobs:
       SKIP_DOCKER_START: true
     input_mapping:
       repo: cnb2cf
+  ensure:
+    in_parallel:
+      - task: delete-cf-space
+        file: buildpacks-ci/tasks/delete-cf-space/task.yml
+      - put: edge-environments
+        params:
+          release: edge-environments
