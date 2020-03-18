@@ -70,6 +70,7 @@ main() {
 
  update_pipeline feller
  update_pipeline ci-images
+ update_pipeline cnb2cf
 }
 
 main "$@"

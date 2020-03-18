@@ -1,0 +1,25 @@
+resources:
+- name: buildpacks-ci
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/buildpacks-ci
+    branch: master
+
+- name: cnb2cf
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/cnb2cf.git
+    branch: master
+    private_key: ((cf-buildpacks-eng-github-ssh-key.private_key))
+
+jobs:
+- name: unit
+  plan:
+  - in_parallel:
+    - get: buildpacks-ci
+    - get: cnb2cf
+      trigger: true
+  - task: unit-tests
+    file: buildpacks-ci/tasks/run-scripts-unit/task.yml
+    input_mapping:
+      repo: cnb2cf
