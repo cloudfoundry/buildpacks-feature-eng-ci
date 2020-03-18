@@ -1,8 +1,9 @@
 resources:
-- name: buildpacks-ci
+- name: ci
   type: git
+  icon: github-circle
   source:
-    uri: https://github.com/cloudfoundry/buildpacks-ci
+    uri: https://github.com/cloudfoundry/buildpacks-feature-eng-ci
     branch: master
 
 - name: cnb2cf
@@ -16,10 +17,12 @@ jobs:
 - name: unit
   plan:
   - in_parallel:
-    - get: buildpacks-ci
+    - get: ci
     - get: cnb2cf
       trigger: true
   - task: unit-tests
-    file: buildpacks-ci/tasks/run-scripts-unit/task.yml
+    file: ci/tasks/run-scripts-unit/task.yml
+    params:
+      RUN_UNPRIVILEGED: true
     input_mapping:
       repo: cnb2cf
