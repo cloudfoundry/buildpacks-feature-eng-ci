@@ -6,12 +6,34 @@ resources:
     uri: https://github.com/cloudfoundry/buildpacks-feature-eng-ci
     branch: master
 
+- name: buildpacks-ci
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/cloudfoundry/buildpacks-ci
+    branch: master
+
 - name: cnb2cf
   type: git
   source:
     uri: git@github.com:cloudfoundry/cnb2cf.git
     branch: master
     private_key: ((cf-buildpacks-eng-github-ssh-key.private_key))
+
+- name: edge-environments
+  type: pool
+  source:
+    branch: master
+    pool: edge-environments
+    private_key: ((public-buildpacks-ci-robots-private-key.private_key))
+    uri: git@github.com:cloudfoundry/public-buildpacks-ci-robots.git
+
+- name: env-repo
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/buildpacks-envs.git
+    branch: master
+    private_key: ((buildpacks-envs-private-key.private_key))
 
 jobs:
 - name: unit
@@ -24,5 +46,31 @@ jobs:
     file: ci/tasks/run-scripts-unit/task.yml
     params:
       RUN_UNPRIVILEGED: true
+    input_mapping:
+      repo: cnb2cf
+
+- name: integration
+  plan:
+  - in_parallel:
+    - get: buildpacks-ci
+    - get: cnb2cf
+      trigger: true
+      passed: [unit]
+    - put: edge-environments
+      params:
+        acquire: true
+    - get: env-repo
+  - task: create-cf-space
+    file: buildpacks-ci/tasks/create-cf-space/task.yml
+    params:
+      ENV_POOL_RESOURCE: edge-environments
+      ENVS_DIR: env-repo
+      ORG: pivotal
+      SYSTEM_DOMAIN: buildpacks-gcp.ci.cf-app.com
+      USERNAME: admin
+  - task: integration-tests
+    file: buildpacks-ci/tasks/run-scripts-integration/task.yml
+    params:
+      SKIP_DOCKER_START: true
     input_mapping:
       repo: cnb2cf
