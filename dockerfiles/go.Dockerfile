@@ -22,5 +22,3 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 RUN mkdir -p /home/testuser && \
   groupadd -r testuser -g 433 && \
   useradd -u 431 -r -g testuser -d /home/testuser -s /usr/sbin/nologin -c "Docker image test user" testuser
-
-USER testuser
