@@ -1,0 +1,62 @@
+---
+resources:
+- name: ci
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
+    branch: master
+
+- name: cflinuxfs3-test-builder-image
+  type: registry-image
+  icon: docker
+  source:
+    repository: cfbuildpacks/test-builder
+    tag: cflinuxfs3
+    username: ((dockerhub-account.username))
+    password: ((dockerhub-account.password))
+
+- name: cflinuxfs3-run-image
+  type: registry-image
+  icon: docker
+  source:
+    repository: cloudfoundry/run
+    tag: full-cnb
+    username: ((dockerhub-account.username))
+    password: ((dockerhub-account.password))
+
+- name: cflinuxfs3-build-image
+  type: registry-image
+  icon: docker
+  source:
+    repository: cloudfoundry/build
+    tag: full-cnb
+    username: ((dockerhub-account.username))
+    password: ((dockerhub-account.password))
+
+- name: pack
+  type: github-release
+  source:
+    repository: pack
+    user: buildpacks
+    access_token: ((buildpacks-github-token))
+
+jobs:
+- name: build-cflinuxfs3-test-builder-image
+  plan:
+  - in_parallel:
+    - get: pack
+    - get: ci
+    - get: cflinuxfs3-run-image
+      trigger: true
+    - get: cflinuxfs3-build-image
+      trigger: true
+  - task: create-test-builder
+    file: ci/tasks/create-test-builder/task.yml
+    privileged: true
+    input_mapping:
+      build_image: cflinuxfs3-build-image
+      run_image: cflinuxfs3-run-image
+  - put: cflinuxfs3-test-builder-image
+    params:
+      image: image/image.tar

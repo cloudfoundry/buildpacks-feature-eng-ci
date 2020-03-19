@@ -6,8 +6,8 @@ set -o pipefail
 readonly PACK_DIR="${PWD}/pack"
 readonly IMAGE_DIR="${PWD}/image"
 
-#shellcheck source=../../scripts/start-docker
-source "${PWD}/ci/scripts/start-docker"
+#shellcheck source=../../util/docker.sh
+source "${PWD}/ci/util/docker.sh"
 
 function main() {
   util::docker::start
@@ -35,7 +35,7 @@ TOML
 }
 
 function builder::export() {
-  docker save test-builder -o "${IMAGE_DIR}/image.tgz"
+  docker save test-builder -o "${IMAGE_DIR}/image.tar"
 }
 
 function trap::handle() {
