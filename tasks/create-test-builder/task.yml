@@ -1,0 +1,18 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: cfbuildpacks/feature-eng-ci
+    tag: docker
+
+inputs:
+- name: pack
+- name: ci
+
+outputs:
+- name: image
+
+run:
+  path: ci/tasks/create-test-builder/run.sh
