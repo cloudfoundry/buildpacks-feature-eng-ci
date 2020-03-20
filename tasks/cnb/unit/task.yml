@@ -1,0 +1,15 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: cfbuildpacks/feature-eng-ci
+    tag: go
+
+inputs:
+- name: ci
+- name: buildpack
+
+run:
+  path: ci/tasks/cnb/unit/task.sh

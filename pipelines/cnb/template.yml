@@ -1,0 +1,30 @@
+#@ load("@ytt:data", "data")
+#@yaml/text-templated-strings
+
+resources:
+- name: buildpack
+  type: git
+  icon: github-circle
+  source:
+    uri: "git@github.com:cloudfoundry/(@= data.values.buildpack @)-cnb.git"
+    private_key: ((cf-buildpacks-eng-github-ssh-key.private_key))
+    branch: master
+
+- name: ci
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/cloudfoundry/buildpacks-feature-eng-ci
+    branch: master
+
+jobs:
+- name: unit-tests
+  public: true
+  serial: true
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: buildpack
+      trigger: true
+  - task: unit-tests
+    file: buildpacks-ci/tasks/cnbs/unit/task.yml
