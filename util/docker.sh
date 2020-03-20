@@ -1,12 +1,49 @@
-#!/usr/bin/env bash
-## Copied from https://github.com/concourse/docker-image-resource/blob/656e99184ed2dd78c7a615cd6d00db20e29405e2/assets/common.sh#L44
+#!/bin/bash
 
-set -o errexit
-set -o nounset
+set -eu
 set -o pipefail
 
-LOG_FILE=${LOG_FILE:-/tmp/docker.log}
-SKIP_PRIVILEGED=${SKIP_PRIVILEGED:-false}
+# shellcheck source=./print.sh
+source "$(dirname "${BASH_SOURCE[0]}")/print.sh"
+
+readonly LOG_FILE="${LOG_FILE:-/tmp/docker.log}"
+readonly SKIP_PRIVILEGED="${SKIP_PRIVILEGED:-false}"
+readonly PID_FILE=/tmp/docker.pid
+readonly SCRATCH_DIR=/scratch/docker
+
+function util::docker::start() {
+  util::print::title "[docker] boot sequence"
+
+  if docker info >/dev/null 2>&1; then
+    util::print::warn "[docker] daemon already running"
+    return
+  fi
+
+  util::docker::privileges::elevate
+  util::docker::scratch::allocate
+  util::docker::daemon::start
+}
+
+function util::docker::stop() {
+  util::print::title "[docker] shutdown sequence"
+
+  util::docker::daemon::stop
+  util::docker::scratch::deallocate
+}
+
+function util::docker::privileges::elevate() {
+  if [[ "${SKIP_PRIVILEGED}" != "false" ]]; then
+    return
+  fi
+
+  util::print::info "[docker] * elevating privileges"
+  util::docker::cgroups::sanitize
+
+  # check for /proc/sys being mounted readonly, as systemd does
+  if grep '/proc/sys\s\+\w\+\s\+ro,' /proc/mounts >/dev/null; then
+    mount -o remount,rw /proc/sys
+  fi
+}
 
 function util::docker::cgroups::sanitize() {
   mkdir -p /sys/fs/cgroup
@@ -94,29 +131,10 @@ function util::docker::devicecontrol::permit() {
   echo a > "${cgroup_dir}${devices_subdir}/devices.allow" || true
 }
 
-function util::docker::start() {
-  echo "starting docker..."
-  if docker info >/dev/null 2>&1; then
-    echo 'docker is already started'
-    exit 0
-  fi
+function util::docker::scratch::allocate() {
+  util::print::info "[docker] * allocating scratch disk"
 
-  mkdir -p /var/log
-  mkdir -p /var/run
-
-  if [ "$SKIP_PRIVILEGED" = "false" ]; then
-    util::docker::cgroups::sanitize
-
-    # check for /proc/sys being mounted readonly, as systemd does
-    if grep '/proc/sys\s\+\w\+\s\+ro,' /proc/mounts >/dev/null; then
-      mount -o remount,rw /proc/sys
-    fi
-  fi
-
-  # shellcheck disable=SC2046,SC2155
-  local server_args="--mtu 1200"
-
-  mkdir -p /scratch/docker
+  mkdir -p "${SCRATCH_DIR}"
 
   if command -v mkfs.btrfs > /dev/null; then
     util::docker::devicecontrol::permit
@@ -127,51 +145,78 @@ function util::docker::start() {
     dockerroot="/tmp/docker-root-${rand}"
 
     if [[ ! -e "${loopdevice}" ]]; then
-      echo "Allocating 25GB scratch filesystem for the docker daemon"
-      dd if=/dev/zero of="${dockerroot}" bs=1024 count=26214400
+      util::print::info "[docker]   * creating 10GB scratch file"
+
+      dd if=/dev/zero of="${dockerroot}" bs=1024 count=1024000 > /dev/null 2>&1
+      # dd if=/dev/zero of="${dockerroot}" bs=1024 count=10485760 > /dev/null
+
+      util::print::info "[docker]   * creating block device"
       mknod "${loopdevice}" b 7 "${rand}"
       losetup "${loopdevice}" "${dockerroot}"
     fi
 
-    mkfs.btrfs "${dockerroot}"
-    mount "${dockerroot}" /scratch/docker
-    echo "Scratch filesystem mounted at /scratch/docker"
+    util::print::info "[docker]   * creating btrfs filesystem"
+    mkfs.btrfs "${dockerroot}" > /dev/null
+
+    util::print::info "[docker]   * mounting filesystem"
+    mount "${dockerroot}" "${SCRATCH_DIR}"
 
     mkdir -p /etc/docker
     echo '{ "storage-driver": "btrfs" }' > /etc/docker/daemon.json
   fi
-
-  # shellcheck disable=SC2086
-  dockerd --data-root /scratch/docker ${server_args} >$LOG_FILE 2>&1 &
-  # shellcheck disable=SC2086
-  echo $! > /tmp/docker.pid
-
-  sleep 1
-
-  until docker info >/dev/null 2>&1; do
-    echo waiting for docker to come up...
-    sleep 1
-  done
 }
 
-function util::docker::stop() {
-  echo "stopping docker..."
-  if [[ -e /tmp/docker.pid ]]; then
-    kill "$(cat /tmp/docker.pid)"
-  fi
+function util::docker::scratch::deallocate() {
+  util::print::info "[docker] * deallocating scratch disk"
 
-  while [[ "$(grep /scratch/docker < /proc/mounts)" != "" ]]; do
-    set +e
-    umount -A /scratch/docker
-    sleep 1
-    set -e
+  util::print::info "[docker]   * unmounting filesystem"
+  while [[ "$(grep "${SCRATCH_DIR}" < /proc/mounts)" != "" ]]; do
+    if ! umount -A "${SCRATCH_DIR}" > /dev/null 2>&1; then
+      sleep 1
+    fi
   done
 
+  util::print::info "[docker]   * removing block device"
   shopt -s nullglob
+    local path
     for device in /dev/loop*; do
-      echo "${device}" | grep "loop[[:digit:]]" | xargs -n1 rm
+      path="$(echo "${device}" | grep "loop[[:digit:]]" || true)"
+      if [[ "${path}" != "" && -e "${path}" ]]; then
+        rm "${path}"
+      fi
     done
   shopt -u nullglob
 
+  util::print::info "[docker]   * deleting 10GB scratch file"
   find /tmp -type f -name 'docker-root-*' -delete
+}
+
+function util::docker::daemon::start() {
+  util::print::printf "[docker] * starting daemon "
+
+  local mtu
+  mtu="$(cat "/sys/class/net/$(ip route get 8.8.8.8 | awk '{ print $5 }')/mtu")"
+
+  dockerd \
+    --data-root "${SCRATCH_DIR}" \
+    --mtu "${mtu}" \
+    > "$LOG_FILE" \
+    2>&1 \
+    &
+  echo "${!}" > "${PID_FILE}"
+
+  until docker info >/dev/null 2>&1; do
+    util::print::printf "*"
+    sleep 1
+  done
+
+  util::print::info " done"
+}
+
+function util::docker::daemon::stop() {
+  if [[ -e "${PID_FILE}" ]]; then
+    util::print::info "[docker] * stopping daemon"
+
+    kill "$(cat "${PID_FILE}")"
+  fi
 }
