@@ -7,6 +7,15 @@ resources:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
 
+- name: alpine
+  type: registry-image
+  icon: docker
+  source:
+    repository: alpine
+    tag: latest
+    username: ((dockerhub-account.username))
+    password: ((dockerhub-account.password))
+
 - name: image
   type: registry-image
   icon: docker
@@ -29,6 +38,8 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
+    - get: alpine
+      trigger: true
     - get: configuration
       trigger: true
   - task: build
