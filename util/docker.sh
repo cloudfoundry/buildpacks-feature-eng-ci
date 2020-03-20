@@ -147,7 +147,7 @@ function util::docker::scratch::allocate() {
     if [[ ! -e "${loopdevice}" ]]; then
       util::print::info "[docker]   * creating 10GB scratch file"
 
-      dd if=/dev/zero of="${dockerroot}" bs=1024 count=10485760 > /dev/null
+      dd if=/dev/zero of="${dockerroot}" bs=1024 count=10485760 > /dev/null 2>&1
 
       util::print::info "[docker]   * creating block device"
       mknod "${loopdevice}" b 7 "${rand}"
