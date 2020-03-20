@@ -16,6 +16,8 @@ resources:
   source:
     uri: https://github.com/cloudfoundry/buildpacks-feature-eng-ci
     branch: master
+    paths:
+    - tasks/cnb/*
 
 jobs:
 - name: unit-tests
