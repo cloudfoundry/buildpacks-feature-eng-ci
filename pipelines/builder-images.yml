@@ -7,7 +7,7 @@ resources:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
     paths:
-    - tasks/create-test-builder
+    - tasks/test-builder/create
 
 - name: cflinuxfs3-test-builder-image
   type: registry-image
@@ -53,8 +53,8 @@ jobs:
       trigger: true
     - get: cflinuxfs3-build-image
       trigger: true
-  - task: create-test-builder
-    file: ci/tasks/create-test-builder/task.yml
+  - task: create
+    file: ci/tasks/test-builder/create/task.yml
     privileged: true
     input_mapping:
       build_image: cflinuxfs3-build-image

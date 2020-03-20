@@ -15,4 +15,4 @@ outputs:
 - name: image
 
 run:
-  path: ci/tasks/create-test-builder/task.sh
+  path: ci/tasks/test-builder/create/task.sh
