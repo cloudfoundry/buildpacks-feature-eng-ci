@@ -6,6 +6,8 @@ resources:
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
+    paths:
+    - tasks/create-test-builder
 
 - name: cflinuxfs3-test-builder-image
   type: registry-image

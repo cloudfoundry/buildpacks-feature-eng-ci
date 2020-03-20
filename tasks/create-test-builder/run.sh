@@ -9,8 +9,13 @@ readonly IMAGE_DIR="${PWD}/image"
 #shellcheck source=../../util/docker.sh
 source "${PWD}/ci/util/docker.sh"
 
+#shellcheck source=../../util/print.sh
+source "${PWD}/ci/util/print.sh"
+
 function main() {
   util::docker::start
+
+  util::print::title "[task] executing"
 
   pack::install
   builder::create
@@ -18,10 +23,14 @@ function main() {
 }
 
 function pack::install() {
+  util::print::title "[task] * installing pack"
+
   tar -xzf "${PACK_DIR}/pack-"*"-linux.tgz" -C /usr/local/bin
 }
 
 function builder::create() {
+  util::print::title "[task] * generating builder.toml"
+
   cat <<TOML > "/tmp/builder.toml"
 description = "empty cflinuxfs3 test builder"
 
@@ -31,10 +40,13 @@ description = "empty cflinuxfs3 test builder"
   run-image = "cloudfoundry/run:full-cnb"
 TOML
 
+  util::print::title "[task] * creating builder image"
   pack create-builder test-builder -b "/tmp/builder.toml"
 }
 
 function builder::export() {
+  util::print::title "[task] * exporting builder image"
+
   docker save test-builder -o "${IMAGE_DIR}/image.tar"
 }
 
