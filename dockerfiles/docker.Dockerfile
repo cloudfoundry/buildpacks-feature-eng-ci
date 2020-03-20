@@ -14,4 +14,5 @@ RUN apt-get -qqy update \
     docker-ce \
     docker-ce-cli \
     containerd.io \
+    iproute2 \
   && apt-get -qqy clean
