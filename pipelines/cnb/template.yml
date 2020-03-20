@@ -27,4 +27,4 @@ jobs:
     - get: buildpack
       trigger: true
   - task: unit-tests
-    file: ci/tasks/cnbs/unit/task.yml
+    file: ci/tasks/cnb/unit/task.yml
