@@ -16,6 +16,7 @@ resources:
     branch: master
     paths:
     - tasks/feller/*
+    - util/*
 
 - name: once-a-day
   type: time

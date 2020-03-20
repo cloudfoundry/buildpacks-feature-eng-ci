@@ -9,6 +9,7 @@ resources:
     paths:
     - tasks/slack-invitations/*
     - tasks/build-image/*
+    - util/*
 
 - name: alpine
   type: registry-image

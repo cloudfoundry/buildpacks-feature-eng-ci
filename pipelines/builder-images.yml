@@ -8,6 +8,7 @@ resources:
     branch: master
     paths:
     - tasks/test-builder/create
+    - util/*
 
 - name: cflinuxfs3-test-builder-image
   type: registry-image

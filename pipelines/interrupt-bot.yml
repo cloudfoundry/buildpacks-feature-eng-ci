@@ -8,6 +8,7 @@ resources:
     branch: master
     paths:
     - tasks/interrupt-bot/*
+    - util/*
 
 - name: alpine
   type: registry-image
