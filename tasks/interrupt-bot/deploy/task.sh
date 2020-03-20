@@ -3,12 +3,28 @@
 set -eu
 set -o pipefail
 
+#shellcheck source=../../../util/print.sh
+source "${PWD}/ci/util/print.sh"
+
 function main() {
-  local project
-  project="$(echo "${SERVICE_ACCOUNT_KEY}" | jq -r .project_id)"
+  util::print::title "[task] executing"
+
+  gcloud::authenticate
+  gcloud::run::deploy
+}
+
+function gcloud::authenticate() {
+  util::print::info "[task] * authenticating with gcp"
 
   gcloud auth activate-service-account \
     --key-file <(echo "${SERVICE_ACCOUNT_KEY}")
+}
+
+function gcloud::run::deploy() {
+  util::print::info "[task] * deploying interrupt-bot"
+
+  local project
+  project="$(echo "${SERVICE_ACCOUNT_KEY}" | jq -r .project_id)"
 
   gcloud run deploy interrupt-bot \
     --image gcr.io/cf-buildpacks/slack-delegate-bot:latest \
