@@ -16,4 +16,4 @@ params:
   SERVICE_ACCOUNT_KEY:
 
 run:
-  path: ci/tasks/interrupt-bot/deploy/run.sh
+  path: ci/tasks/interrupt-bot/deploy/task.sh

@@ -15,4 +15,4 @@ outputs:
 - name: buildpackage
 
 run:
-  path: ci/tasks/buildpackage/create/run.sh
+  path: ci/tasks/buildpackage/create/task.sh
