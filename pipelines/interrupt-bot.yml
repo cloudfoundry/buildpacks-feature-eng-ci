@@ -6,6 +6,8 @@ resources:
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
+    paths:
+    - tasks/interrupt-bot/*
 
 - name: alpine
   type: registry-image
@@ -24,29 +26,19 @@ resources:
     username: _json_key
     password: ((cloud-runner-service-account-key))
 
-- name: configuration
-  type: git
-  icon: github-circle
-  source:
-    uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
-    branch: master
-    paths:
-    - tasks/interrupt-bot/build/*
-
 jobs:
 - name: build-and-push
   plan:
   - in_parallel:
     - get: ci
-    - get: alpine
       trigger: true
-    - get: configuration
+    - get: alpine
       trigger: true
   - task: build
     file: ci/tasks/build-image/task.yml
     privileged: true
     input_mapping:
-      source: configuration
+      source: ci
     params:
       CONTEXT: source/tasks/interrupt-bot/build
   - put: image
