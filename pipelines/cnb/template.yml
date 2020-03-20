@@ -28,3 +28,19 @@ jobs:
       trigger: true
   - task: unit-tests
     file: ci/tasks/cnb/unit/task.yml
+
+- name: integration-tests
+  public: true
+  serial: true
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: buildpack
+      trigger: true
+      passed:
+      - unit-tests
+  - task: integration-tests
+    file: ci/tasks/cnb/integration/task.yml
+    privileged: true
+    params:
+      GIT_TOKEN: ((buildpacks-github-token))
