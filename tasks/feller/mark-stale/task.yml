@@ -12,7 +12,7 @@ inputs:
 - name: feller
 
 run:
-  path: ci/tasks/feller/run/task.sh
+  path: ci/tasks/feller/mark-stale/task.sh
 
 params:
   TRACKER_PROJECT:

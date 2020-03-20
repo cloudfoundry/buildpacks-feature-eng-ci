@@ -43,9 +43,9 @@ jobs:
       trigger: true
       passed: [tests]
   - task: build
-    file: ci/tasks/feller/release/task.yml
+    file: ci/tasks/feller/build/task.yml
 
-- name: run
+- name: mark-stale
   plan:
   - in_parallel:
     - get: ci
@@ -55,7 +55,7 @@ jobs:
     - get: once-a-day
       trigger: true
   - task: run
-    file: ci/tasks/feller/run/task.yml
+    file: ci/tasks/feller/mark-stale/task.yml
     params:
       TRACKER_PROJECT: 1042066
       TRACKER_TOKEN: ((pivotal-tracker-api-token))
