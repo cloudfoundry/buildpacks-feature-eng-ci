@@ -15,7 +15,7 @@ function main() {
 }
 
 function feller::mark::stale() {
-  util::print::title "[task] * running feller mark-stale"
+  util::print::info "[task] * running feller mark-stale"
 
   pushd "${FELLER_DIR}" > /dev/null || return
     go run main.go mark-stale \
