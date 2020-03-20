@@ -12,4 +12,4 @@ inputs:
 - name: feller
 
 run:
-  path: ci/tasks/feller/release/task.sh
+  path: ci/tasks/feller/build/task.sh

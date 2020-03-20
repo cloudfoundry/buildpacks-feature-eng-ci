@@ -42,7 +42,7 @@ jobs:
     - get: feller
       trigger: true
       passed: [tests]
-  - task: tests
+  - task: build
     file: ci/tasks/feller/release/task.yml
 
 - name: run
