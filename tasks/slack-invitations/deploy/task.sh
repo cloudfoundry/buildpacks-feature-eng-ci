@@ -3,6 +3,9 @@
 set -eu
 set -o pipefail
 
+#shellcheck source=../../../util/print.sh
+source "${PWD}/ci/util/print.sh"
+
 function main() {
   util::print::title "[task] executing"
 
