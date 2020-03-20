@@ -1,5 +1,10 @@
 FROM cfbuildpacks/feature-eng-ci:docker
 
+RUN apt-get -qqy update \
+  && apt-get -qqy install \
+    btrfs-progs \
+  && apt-get -qqy clean
+
 ARG PACK_VERSION=0.9.0
 RUN curl "https://github.com/buildpacks/pack/releases/download/v${PACK_VERSION}/pack-v${PACK_VERSION}-linux.tgz" \
     --silent \
