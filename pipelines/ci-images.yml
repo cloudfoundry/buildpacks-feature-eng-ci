@@ -41,15 +41,6 @@ resources:
     username: ((dockerhub-account.username))
     password: ((dockerhub-account.password))
 
-- name: cf-image
-  type: registry-image
-  icon: docker
-  source:
-    repository: cfbuildpacks/feature-eng-ci
-    tag: cf
-    username: ((dockerhub-account.username))
-    password: ((dockerhub-account.password))
-
 - name: docker-image
   type: registry-image
   icon: docker
@@ -112,15 +103,6 @@ resources:
     branch: master
     paths:
     - dockerfiles/gcloud.Dockerfile
-
-- name: cf-dockerfile
-  type: git
-  icon: github-circle
-  source:
-    uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
-    branch: master
-    paths:
-    - dockerfiles/cf.Dockerfile
 
 - name: buildpackage-dockerfile
   type: git
@@ -217,26 +199,6 @@ jobs:
     params:
       DOCKERFILE: source/dockerfiles/gcloud.Dockerfile
   - put: gcloud-image
-    params:
-      image: image/image.tar
-
-- name: build-cf-image
-  plan:
-  - in_parallel:
-    - get: ci
-    - get: minimal-image
-      trigger: true
-      passed: [build-minimal-image]
-    - get: cf-dockerfile
-      trigger: true
-  - task: build
-    file: ci/tasks/build-image/task.yml
-    privileged: true
-    input_mapping:
-      source: cf-dockerfile
-    params:
-      DOCKERFILE: source/dockerfiles/cf.Dockerfile
-  - put: cf-image
     params:
       image: image/image.tar
 
