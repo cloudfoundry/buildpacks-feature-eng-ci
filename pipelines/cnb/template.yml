@@ -22,6 +22,7 @@ resources:
 
 - name: version
   type: semver
+  icon: tag
   source:
     initial_version: 0.0.0
     driver: gcs
@@ -31,6 +32,7 @@ resources:
 
 - name: release
   type: github-release
+  icon: package-variant-closed
   source:
     repository: "(@= data.values.buildpack @)-cnb"
     user: cloudfoundry
@@ -89,3 +91,5 @@ jobs:
         globs:
           - artifacts/*.tgz
     - put: version
+      params:
+        file: version/version
