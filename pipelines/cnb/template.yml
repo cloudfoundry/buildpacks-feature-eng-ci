@@ -20,6 +20,22 @@ resources:
     - tasks/cnb/*
     - util/*
 
+- name: version
+  type: semver
+  source:
+    initial_version: 0.0.0
+    driver: gcs
+    bucket: artifacts.cf-buildpacks.appspot.com
+    key: "cnb-versions/(@= data.values.buildpack @)-version"
+    json_key: ((gcp-service-account-key))
+
+- name: release
+  type: github-release
+  source:
+    repository: "(@= data.values.buildpack @)-cnb"
+    user: cloudfoundry
+    access_token: ((buildpacks-github-token))
+
 jobs:
 - name: unit-tests
   public: true
@@ -47,3 +63,29 @@ jobs:
     privileged: true
     params:
       GIT_TOKEN: ((buildpacks-github-token))
+
+- name: release
+  public: true
+  serial: true
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: version
+      params:
+        bump: patch
+    - get: buildpack
+      trigger: true
+      passed:
+      - integration-tests
+  - task: package
+    file: ci/tasks/cnb/package/task.yml
+    params:
+      LANGUAGE: #@ data.values.buildpack
+  - in_parallel:
+    - put: release
+      params:
+        name: artifacts/name
+        tag: artifacts/tag
+        globs:
+          - artifacts/*.tgz
+    - put: version
