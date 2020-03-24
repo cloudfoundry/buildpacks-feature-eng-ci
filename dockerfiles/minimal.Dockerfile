@@ -7,6 +7,7 @@ RUN \
     curl \
     gnupg \
     vim \
+    git \
   && \
   apt-get clean
 
