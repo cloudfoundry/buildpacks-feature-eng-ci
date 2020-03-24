@@ -34,8 +34,8 @@ resources:
   type: github-release
   icon: package-variant-closed
   source:
-    repository: "(@= data.values.buildpack @)-cnb"
     user: cloudfoundry
+    repository: "(@= data.values.buildpack @)-cnb"
     access_token: ((buildpacks-github-token))
 
 jobs:
@@ -87,6 +87,7 @@ jobs:
     - put: release
       params:
         body: artifacts/body
+        commitish: artifacts/commitish
         name: artifacts/name
         tag: artifacts/tag
         globs:

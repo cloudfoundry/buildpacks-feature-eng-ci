@@ -40,6 +40,10 @@ function release::prepare() {
   printf "v%s" "${version}" > "${ARTIFACTS_DIR}/name"
   printf "v%s" "${version}" > "${ARTIFACTS_DIR}/tag"
 
+  pushd "${BUILDPACK_DIR}" > /dev/null || return
+    git rev-parse HEAD > "${ARTIFACTS_DIR}/commitish"
+  popd > /dev/null || return
+
   "${BUILDPACK_DIR}/.bin/jam" summarize \
     --buildpack "${ARTIFACTS_DIR}/"*".tgz" \
     --format markdown \
