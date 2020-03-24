@@ -39,6 +39,11 @@ function release::prepare() {
 
   printf "v%s" "${version}" > "${ARTIFACTS_DIR}/name"
   printf "v%s" "${version}" > "${ARTIFACTS_DIR}/tag"
+
+  "${BUILDPACK_DIR}/.bin/jam" summarize \
+    --buildpack "${ARTIFACTS_DIR}/"*".tgz" \
+    --format markdown \
+    > "${ARTIFACTS_DIR}/body"
 }
 
 main "${@}"
