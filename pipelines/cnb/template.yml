@@ -86,6 +86,7 @@ jobs:
   - in_parallel:
     - put: release
       params:
+        body: artifacts/body
         name: artifacts/name
         tag: artifacts/tag
         globs:
