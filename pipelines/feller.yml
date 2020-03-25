@@ -18,6 +18,24 @@ resources:
     - tasks/feller/*
     - util/*
 
+- name: version
+  type: semver
+  icon: tag
+  source:
+    initial_version: 0.0.0
+    driver: gcs
+    bucket: artifacts.cf-buildpacks.appspot.com
+    key: "feller-versions/feller-version"
+    json_key: ((gcp-service-account-key))
+
+- name: release
+  type: github-release
+  icon: package-variant-closed
+  source:
+    user: cloudfoundry
+    repository: feller
+    access_token: ((buildpacks-github-token))
+
 - name: once-a-day
   type: time
   icon: alarm
@@ -41,10 +59,22 @@ jobs:
   - in_parallel:
     - get: ci
     - get: feller
-      trigger: true
       passed: [tests]
-  - task: build
-    file: ci/tasks/feller/build/task.yml
+    - get: version
+      params:
+        bump: patch
+  - task: package
+    file: ci/tasks/feller/package/task.yml
+  - in_parallel:
+    - put: release
+      params:
+        name: artifacts/name
+        tag: artifacts/tag
+        globs:
+          - artifacts/feller-*
+    - put: version
+      params:
+        file: version/version
 
 - name: mark-stale
   plan:
