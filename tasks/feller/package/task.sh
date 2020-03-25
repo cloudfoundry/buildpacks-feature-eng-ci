@@ -23,7 +23,7 @@ function feller::package() {
   pushd "${FELLER_DIR}" > /dev/null || return
     for os in darwin linux; do
       util::print::info "[task] * building feller on ${os}"
-      GOOS="${os}" GOARCH="amd64" go build -o "${ARTIFACTS_DIR}/feller-${os}" ./cargo/jam/main.go
+      GOOS="${os}" GOARCH="amd64" go build -o "${ARTIFACTS_DIR}/feller-${os}" ./main.go
       chmod +x "${ARTIFACTS_DIR}/feller-${os}"
     done
   popd > /dev/null || return

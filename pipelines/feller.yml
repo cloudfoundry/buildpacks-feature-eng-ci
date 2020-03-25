@@ -32,7 +32,7 @@ resources:
   type: github-release
   icon: package-variant-closed
   source:
-    user: cloudfoundry
+    user: pivotal
     repository: feller
     access_token: ((buildpacks-github-token))
 
