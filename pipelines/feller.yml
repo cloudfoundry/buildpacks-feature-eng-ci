@@ -34,7 +34,7 @@ resources:
   source:
     user: pivotal
     repository: feller
-    access_token: ((buildpacks-github-token))
+    access_token: ((pivotal-github-token))
 
 - name: once-a-day
   type: time
