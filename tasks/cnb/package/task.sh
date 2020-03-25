@@ -6,6 +6,7 @@ set -o pipefail
 readonly BUILDPACK_DIR="${PWD}/buildpack"
 readonly VERSION_DIR="${PWD}/version"
 readonly ARTIFACTS_DIR="${PWD}/artifacts"
+readonly RELEASE_DIR="${PWD}/release"
 
 #shellcheck source=../../../util/print.sh
 source "${PWD}/ci/util/print.sh"
@@ -44,10 +45,17 @@ function release::prepare() {
     git rev-parse HEAD > "${ARTIFACTS_DIR}/commitish"
   popd > /dev/null || return
 
-  "${BUILDPACK_DIR}/.bin/jam" summarize \
+  feller stories \
+    --tracker-project "${TRACKER_PROJECT}" \
+    --tracker-token "${TRACKER_TOKEN}" \
+    --github-token "${GITHUB_TOKEN}" \
+    --since "$(cat "${RELEASE_DIR}/commit_sha")" \
+    > "${ARTIFACTS_DIR}/body"
+
+  jam summarize \
     --buildpack "${ARTIFACTS_DIR}/"*".tgz" \
     --format markdown \
-    > "${ARTIFACTS_DIR}/body"
+    >> "${ARTIFACTS_DIR}/body"
 }
 
 main "${@}"

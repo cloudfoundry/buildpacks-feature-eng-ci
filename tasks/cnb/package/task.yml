@@ -11,6 +11,7 @@ inputs:
 - name: ci
 - name: buildpack
 - name: version
+- name: release
 
 outputs:
 - name: artifacts
