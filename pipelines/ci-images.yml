@@ -68,6 +68,15 @@ resources:
     username: ((dockerhub-account.username))
     password: ((dockerhub-account.password))
 
+- name: feller-image
+  type: registry-image
+  icon: docker
+  source:
+    repository: cfbuildpacks/feature-eng-ci
+    tag: feller
+    username: ((dockerhub-account.username))
+    password: ((dockerhub-account.password))
+
 - name: minimal-dockerfile
   type: git
   icon: github-circle
@@ -121,6 +130,15 @@ resources:
     branch: master
     paths:
     - dockerfiles/integration.Dockerfile
+
+- name: feller-dockerfile
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
+    branch: master
+    paths:
+    - dockerfiles/feller.Dockerfile
 
 - name: pack
   type: github-release
@@ -249,5 +267,27 @@ jobs:
     params:
       DOCKERFILE: source/dockerfiles/integration.Dockerfile
   - put: integration-image
+    params:
+      image: image/image.tar
+
+- name: build-feller-image
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: docker-image
+      trigger: true
+      passed: [build-docker-image]
+    - get: feller-dockerfile
+      trigger: true
+    - get: pack
+      trigger: true
+  - task: build
+    file: ci/tasks/build-image/task.yml
+    privileged: true
+    input_mapping:
+      source: feller-dockerfile
+    params:
+      DOCKERFILE: source/dockerfiles/feller.Dockerfile
+  - put: feller-image
     params:
       image: image/image.tar
