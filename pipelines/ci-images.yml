@@ -286,6 +286,7 @@ jobs:
       source: feller-dockerfile
     params:
       DOCKERFILE: source/dockerfiles/feller.Dockerfile
+      GITHUB_TOKEN: ((pivotal-github-token))
   - put: feller-image
     params:
       image: image/image.tar
