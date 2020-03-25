@@ -9,7 +9,6 @@ image_resource:
 
 inputs:
 - name: ci
-- name: release
 
 run:
   path: ci/tasks/feller/mark-stale/task.sh
