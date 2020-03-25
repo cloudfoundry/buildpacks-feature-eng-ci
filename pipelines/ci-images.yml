@@ -279,8 +279,6 @@ jobs:
       passed: [build-docker-image]
     - get: feller-dockerfile
       trigger: true
-    - get: pack
-      trigger: true
   - task: build
     file: ci/tasks/build-image/task.yml
     privileged: true
