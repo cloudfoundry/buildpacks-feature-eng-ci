@@ -166,6 +166,22 @@ resources:
     repository: pack
     access_token: ((buildpacks-github-token))
 
+- name: feller
+  type: github-release
+  icon: package-variant-closed
+  source:
+    user: pivotal
+    repository: feller
+    access_token: ((pivotal-github-token))
+
+- name: packit
+  type: github-release
+  icon: package-variant-closed
+  source:
+    user: cloudfoundry
+    repository: packit
+    access_token: ((buildpacks-github-token))
+
 jobs:
 - name: build-minimal-image
   plan:
@@ -297,6 +313,8 @@ jobs:
       passed: [build-minimal-image]
     - get: feller-dockerfile
       trigger: true
+    - get: feller
+      trigger: true
   - task: build
     file: ci/tasks/build-image/task.yml
     privileged: true
@@ -317,6 +335,10 @@ jobs:
       trigger: true
       passed: [build-go-image]
     - get: cnb-packaging-dockerfile
+      trigger: true
+    - get: feller
+      trigger: true
+    - get: packit
       trigger: true
   - task: build
     file: ci/tasks/build-image/task.yml
