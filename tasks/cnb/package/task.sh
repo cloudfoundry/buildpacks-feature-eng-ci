@@ -48,7 +48,7 @@ function release::prepare() {
   feller stories \
     --tracker-token "${TRACKER_TOKEN}" \
     --github-token "${GITHUB_TOKEN}" \
-    --repo "cloudfoundry/${LANGUAGE}-cnb" \
+    --github-repo "cloudfoundry/${LANGUAGE}-cnb" \
     --since "$(cat "${RELEASE_DIR}/commit_sha")" \
     > "${ARTIFACTS_DIR}/body"
 
