@@ -5,11 +5,9 @@ RUN apt-get -qqy update \
     btrfs-progs \
   && apt-get -qqy clean
 
-ARG PACK_VERSION=0.9.0
-RUN curl "https://github.com/buildpacks/pack/releases/download/v${PACK_VERSION}/pack-v${PACK_VERSION}-linux.tgz" \
-    --silent \
-    --location \
-    --output /tmp/pack.tgz  \
+RUN curl --silent "https://api.github.com/repos/buildpacks/pack/releases/latest" \
+    | jq -r '.assets[] | .browser_download_url | select(contains("linux"))' \
+    | xargs curl --silent --location --output /tmp/pack.tgz \
   && tar -xzvf /tmp/pack.tgz -C /usr/local/bin \
   && rm /tmp/pack.tgz
 

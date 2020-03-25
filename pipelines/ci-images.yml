@@ -122,6 +122,14 @@ resources:
     paths:
     - dockerfiles/integration.Dockerfile
 
+- name: pack
+  type: github-release
+  icon: package-variant-closed
+  source:
+    user: buildpacks
+    repository: pack
+    access_token: ((buildpacks-github-token))
+
 jobs:
 - name: build-minimal-image
   plan:
@@ -230,6 +238,8 @@ jobs:
       trigger: true
       passed: [build-docker-image]
     - get: integration-dockerfile
+      trigger: true
+    - get: pack
       trigger: true
   - task: build
     file: ci/tasks/build-image/task.yml
