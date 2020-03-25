@@ -50,6 +50,15 @@ resources:
     username: ((dockerhub-account.username))
     password: ((dockerhub-account.password))
 
+- name: feller-image
+  type: registry-image
+  icon: docker
+  source:
+    repository: cfbuildpacks/feature-eng-ci
+    tag: feller
+    username: ((dockerhub-account.username))
+    password: ((dockerhub-account.password))
+
 - name: buildpackage-image
   type: registry-image
   icon: docker
@@ -68,12 +77,12 @@ resources:
     username: ((dockerhub-account.username))
     password: ((dockerhub-account.password))
 
-- name: feller-image
+- name: cnb-packaging-image
   type: registry-image
   icon: docker
   source:
     repository: cfbuildpacks/feature-eng-ci
-    tag: feller
+    tag: cnb-packaging
     username: ((dockerhub-account.username))
     password: ((dockerhub-account.password))
 
@@ -139,6 +148,15 @@ resources:
     branch: master
     paths:
     - dockerfiles/feller.Dockerfile
+
+- name: cnb-packaging-dockerfile
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
+    branch: master
+    paths:
+    - dockerfiles/cnb-packaging.Dockerfile
 
 - name: pack
   type: github-release
@@ -274,9 +292,9 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: docker-image
+    - get: minimal-image
       trigger: true
-      passed: [build-docker-image]
+      passed: [build-minimal-image]
     - get: feller-dockerfile
       trigger: true
   - task: build
@@ -288,5 +306,26 @@ jobs:
       DOCKERFILE: source/dockerfiles/feller.Dockerfile
       GITHUB_TOKEN: ((pivotal-github-token))
   - put: feller-image
+    params:
+      image: image/image.tar
+
+- name: build-cnb-packaging-image
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: go-image
+      trigger: true
+      passed: [build-go-image]
+    - get: cnb-packaging-dockerfile
+      trigger: true
+  - task: build
+    file: ci/tasks/build-image/task.yml
+    privileged: true
+    input_mapping:
+      source: cnb-packaging-dockerfile
+    params:
+      DOCKERFILE: source/dockerfiles/cnb-packaging.Dockerfile
+      GITHUB_TOKEN: ((pivotal-github-token))
+  - put: cnb-packaging-image
     params:
       image: image/image.tar
