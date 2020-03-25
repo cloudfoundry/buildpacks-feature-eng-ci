@@ -323,7 +323,6 @@ jobs:
     params:
       DOCKERFILE: source/dockerfiles/feller.Dockerfile
       BUILD_ARG_GITHUB_TOKEN: ((pivotal-github-token))
-      BUILD_ARG_TEST_VALUE: "some-test-value"
   - put: feller-image
     params:
       image: image/image.tar
