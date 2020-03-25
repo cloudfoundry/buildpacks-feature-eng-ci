@@ -55,13 +55,12 @@ jobs:
         bump: patch
   - task: package
     file: ci/tasks/packit/package/task.yml
-  - in_parallel:
-    - put: release
-      params:
-        name: artifacts/name
-        tag: artifacts/tag
-        globs:
-          - artifacts/jam-*
-    - put: version
-      params:
-        file: version/version
+  - put: release
+    params:
+      name: artifacts/name
+      tag: artifacts/tag
+      globs:
+        - artifacts/jam-*
+  - put: version
+    params:
+      file: version/version

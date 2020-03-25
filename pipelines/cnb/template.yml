@@ -84,15 +84,14 @@ jobs:
     file: ci/tasks/cnb/package/task.yml
     params:
       LANGUAGE: #@ data.values.buildpack
-  - in_parallel:
-    - put: release
-      params:
-        body: artifacts/body
-        commitish: artifacts/commitish
-        name: artifacts/name
-        tag: artifacts/tag
-        globs:
-          - artifacts/*.tgz
-    - put: version
-      params:
-        file: version/version
+  - put: release
+    params:
+      body: artifacts/body
+      commitish: artifacts/commitish
+      name: artifacts/name
+      tag: artifacts/tag
+      globs:
+        - artifacts/*.tgz
+  - put: version
+    params:
+      file: version/version

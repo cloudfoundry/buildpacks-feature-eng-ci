@@ -65,16 +65,15 @@ jobs:
         bump: patch
   - task: package
     file: ci/tasks/feller/package/task.yml
-  - in_parallel:
-    - put: release
-      params:
-        name: artifacts/name
-        tag: artifacts/tag
-        globs:
-          - artifacts/feller-*
-    - put: version
-      params:
-        file: version/version
+  - put: release
+    params:
+      name: artifacts/name
+      tag: artifacts/tag
+      globs:
+        - artifacts/feller-*
+  - put: version
+    params:
+      file: version/version
 
 - name: mark-stale
   plan:
