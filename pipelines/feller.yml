@@ -80,10 +80,6 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: release
-      params:
-        globs:
-        - feller-linux
     - get: once-a-day
       trigger: true
   - task: run
