@@ -5,11 +5,11 @@ image_resource:
   type: registry-image
   source:
     repository: cfbuildpacks/feature-eng-ci
-    tag: go
+    tag: minimal
 
 inputs:
 - name: ci
-- name: feller
+- name: release
 
 run:
   path: ci/tasks/feller/mark-stale/task.sh

@@ -3,7 +3,7 @@
 set -eu
 set -o pipefail
 
-readonly FELLER_DIR="${PWD}/feller"
+readonly RELEASE_DIR="${PWD}/release"
 
 #shellcheck source=../../../util/print.sh
 source "${PWD}/ci/util/print.sh"
@@ -17,12 +17,11 @@ function main() {
 function feller::mark::stale() {
   util::print::info "[task] * running feller mark-stale"
 
-  pushd "${FELLER_DIR}" > /dev/null || return
-    go run main.go mark-stale \
+  "${RELEASE_DIR}/feller-linux" \
+    mark-stale \
       --tracker-project "${TRACKER_PROJECT}" \
       --tracker-token "${TRACKER_TOKEN}" \
       --github-token "${GITHUB_TOKEN}"
-  popd > /dev/null || return
 }
 
 main "${@}"
