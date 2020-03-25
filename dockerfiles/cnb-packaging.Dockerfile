@@ -6,8 +6,6 @@ RUN curl "https://api.github.com/repos/pivotal/feller/releases/latest" \
     | jq -r '.assets[] | .browser_download_url | select(contains("linux"))' \
     | xargs curl --silent --location --output /usr/local/bin/feller
 
-RUN curl "https://api.github.com/repos/cloudfoundry/packit/releases/latest" \
-      --silent \
-      --header "Authorization: token ${GITHUB_TOKEN}" \
+RUN curl --silent "https://api.github.com/repos/cloudfoundry/packit/releases/latest" \
     | jq -r '.assets[] | .browser_download_url | select(contains("linux"))' \
     | xargs curl --silent --location --output /usr/local/bin/jam
