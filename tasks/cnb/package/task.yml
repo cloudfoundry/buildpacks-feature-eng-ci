@@ -21,6 +21,5 @@ run:
 
 params:
   LANGUAGE:
-  TRACKER_PROJECT:
   TRACKER_TOKEN:
   GITHUB_TOKEN:

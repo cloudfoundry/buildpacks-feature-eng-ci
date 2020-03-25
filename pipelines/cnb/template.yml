@@ -84,7 +84,6 @@ jobs:
     file: ci/tasks/cnb/package/task.yml
     params:
       LANGUAGE: #@ data.values.buildpack
-      TRACKER_PROJECT: 1042066
       TRACKER_TOKEN: ((pivotal-tracker-api-token))
       GITHUB_TOKEN: ((buildpacks-github-token))
   - put: release

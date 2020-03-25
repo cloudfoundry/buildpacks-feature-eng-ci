@@ -46,7 +46,6 @@ function release::prepare() {
   popd > /dev/null || return
 
   feller stories \
-    --tracker-project "${TRACKER_PROJECT}" \
     --tracker-token "${TRACKER_TOKEN}" \
     --github-token "${GITHUB_TOKEN}" \
     --since "$(cat "${RELEASE_DIR}/commit_sha")" \
