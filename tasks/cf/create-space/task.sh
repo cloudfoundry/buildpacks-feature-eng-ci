@@ -46,7 +46,7 @@ function cf::authenticate() {
 
   cf auth admin "${password}"
 
-  echo "Logging in to ${target}" >> "${SPACE_DIR}/login"
+  echo "echo \"Logging in to ${target}\"" >> "${SPACE_DIR}/login"
   echo "cf auth admin \"${password}\"" >> "${SPACE_DIR}/login"
 }
 
@@ -59,7 +59,7 @@ function cf::space::create() {
   cf create-org "${ORG}"
   cf create-space "${space}" -o "${ORG}"
 
-  echo "Targetting ${ORG} org and ${space} space" >> "${SPACE_DIR}/login"
+  echo "echo \"Targetting ${ORG} org and ${space} space\"" >> "${SPACE_DIR}/login"
   echo "cf target -o \"${ORG}\" -s \"${space}\"" >> "${SPACE_DIR}/login"
 
   echo "${space}" > "${SPACE_DIR}/name"
