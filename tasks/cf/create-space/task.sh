@@ -21,9 +21,9 @@ function main() {
 function space::setup() {
   util::print::info "[task] * creating space login script"
 
-  cat <<-LOGIN > "${SPACE_DIR}/login"
-    #!/usr/bin/env sh
-    set +x
+  cat <<LOGIN > "${SPACE_DIR}/login"
+#!/bin/bash
+set +x
 LOGIN
   chmod 755 "${SPACE_DIR}/login"
 }
@@ -38,7 +38,7 @@ function cf::authenticate() {
 
   cf api "${target}" --skip-ssl-validation
 
-  echo "cf api \"${target}\"" >> "${SPACE_DIR}/login"
+  echo "cf api \"${target}\" --skip-ssl-validation" >> "${SPACE_DIR}/login"
 
   local password
   eval "$(bbl --state-dir "${ENVIRONMENTS_DIR}/${name}" print-env)"
