@@ -1,0 +1,60 @@
+#@ load("@ytt:data", "data")
+#@yaml/text-templated-strings
+
+resources:
+- name: ci
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/cloudfoundry/buildpacks-feature-eng-ci
+    branch: master
+    paths:
+    - tasks/metacnb/*
+    - util/*
+
+- name: buildpack
+  type: git
+  icon: github-circle
+  source:
+    uri: "git@github.com:cloudfoundry/(@= data.values.buildpack @)-cnb.git"
+    private_key: ((cf-buildpacks-eng-github-ssh-key.private_key))
+    branch: master
+
+- name: version
+  type: semver
+  icon: tag
+  source:
+    initial_version: 0.0.0
+    driver: gcs
+    bucket: artifacts.cf-buildpacks.appspot.com
+    key: "cnb-versions/(@= data.values.buildpack @)-family-version"
+    json_key: ((gcp-service-account-key))
+
+- name: cnb2cf
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/cloudfoundry/cnb2cf
+    branch: master
+
+jobs:
+- name: package-rc
+  serial: true
+  public: true
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: version
+      params:
+        pre: rc
+    - get: buildpack
+      trigger: true
+    - get: cnb2cf
+  - task: shim
+    file: ci/tasks/metacnb/shim/task.yml
+  - put: shimmed-buildpack
+    params:
+      file: shimmed-buildpack/*.zip
+  - put: version
+    params:
+      file: version/version
