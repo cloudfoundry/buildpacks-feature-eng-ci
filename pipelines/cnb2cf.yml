@@ -6,30 +6,26 @@ resources:
     uri: https://github.com/cloudfoundry/buildpacks-feature-eng-ci
     branch: master
 
-- name: buildpacks-ci
-  type: git
-  icon: github-circle
-  source:
-    uri: https://github.com/cloudfoundry/buildpacks-ci
-    branch: master
-
 - name: cnb2cf
   type: git
+  icon: github-circle
   source:
     uri: git@github.com:cloudfoundry/cnb2cf.git
     branch: master
     private_key: ((cf-buildpacks-eng-github-ssh-key.private_key))
 
-- name: edge-environments
+- name: lock
   type: pool
+  icon: lock-open
   source:
-    branch: master
-    pool: edge-environments
-    private_key: ((public-buildpacks-ci-robots-private-key.private_key))
     uri: git@github.com:cloudfoundry/public-buildpacks-ci-robots.git
+    branch: master
+    private_key: ((public-buildpacks-ci-robots-private-key.private_key))
+    pool: edge-environments
 
-- name: env-repo
+- name: environments
   type: git
+  icon: cloud-outline
   source:
     uri: git@github.com:cloudfoundry/buildpacks-envs.git
     branch: master
@@ -43,41 +39,31 @@ jobs:
     - get: cnb2cf
       trigger: true
   - task: unit-tests
-    file: ci/tasks/run-scripts-unit/task.yml
-    params:
-      RUN_UNPRIVILEGED: true
-    input_mapping:
-      repo: cnb2cf
+    file: ci/tasks/cnb2cf/unit/task.yml
 
 - name: integration
   plan:
   - in_parallel:
     - get: buildpacks-ci
+    - get: environments
     - get: cnb2cf
       trigger: true
-      passed: [unit]
-    - put: edge-environments
+      passed:
+      - unit
+    - put: lock
       params:
         acquire: true
-    - get: env-repo
-  - task: create-cf-space
-    file: buildpacks-ci/tasks/create-cf-space/task.yml
+  - task: create-space
+    file: ci/tasks/cf/create-space/task.yml
     params:
-      ENV_POOL_RESOURCE: edge-environments
-      ENVS_DIR: env-repo
+      DOMAIN: buildpacks-gcp.ci.cf-app.com
       ORG: pivotal
-      SYSTEM_DOMAIN: buildpacks-gcp.ci.cf-app.com
-      USERNAME: admin
   - task: integration-tests
-    file: buildpacks-ci/tasks/run-scripts-integration/task.yml
-    params:
-      SKIP_DOCKER_START: true
-    input_mapping:
-      repo: cnb2cf
+    file: ci/tasks/cnb2cf/integration/task.yml
   ensure:
     in_parallel:
-      - task: delete-cf-space
-        file: buildpacks-ci/tasks/delete-cf-space/task.yml
-      - put: edge-environments
+      - task: delete-space
+        file: ci/tasks/cf/delete-space/task.yml
+      - put: lock
         params:
           release: edge-environments
