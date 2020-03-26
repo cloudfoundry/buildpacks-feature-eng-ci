@@ -66,4 +66,4 @@ jobs:
         file: ci/tasks/cf/delete-space/task.yml
       - put: lock
         params:
-          release: edge-environments
+          release: lock

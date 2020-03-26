@@ -86,6 +86,15 @@ resources:
     username: ((dockerhub-account.username))
     password: ((dockerhub-account.password))
 
+- name: cf-image
+  type: registry-image
+  icon: docker
+  source:
+    repository: cfbuildpacks/feature-eng-ci
+    tag: cf
+    username: ((dockerhub-account.username))
+    password: ((dockerhub-account.password))
+
 - name: minimal-dockerfile
   type: git
   icon: github-circle
@@ -157,6 +166,15 @@ resources:
     branch: master
     paths:
     - dockerfiles/cnb-packaging.Dockerfile
+
+- name: cf-dockerfile
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
+    branch: master
+    paths:
+    - dockerfiles/cf.Dockerfile
 
 - name: pack
   type: github-release
@@ -349,5 +367,25 @@ jobs:
       DOCKERFILE: source/dockerfiles/cnb-packaging.Dockerfile
       BUILD_ARG_GITHUB_TOKEN: ((pivotal-github-token))
   - put: cnb-packaging-image
+    params:
+      image: image/image.tar
+
+- name: build-cf-image
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: minimal-image
+      trigger: true
+      passed: [build-minimal-image]
+    - get: cf-dockerfile
+      trigger: true
+  - task: build
+    file: ci/tasks/build-image/task.yml
+    privileged: true
+    input_mapping:
+      source: cf-dockerfile
+    params:
+      DOCKERFILE: source/dockerfiles/cf.Dockerfile
+  - put: cf-image
     params:
       image: image/image.tar
