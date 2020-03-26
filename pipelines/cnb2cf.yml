@@ -44,7 +44,7 @@ jobs:
 - name: integration
   plan:
   - in_parallel:
-    - get: buildpacks-ci
+    - get: ci
     - get: environments
     - get: cnb2cf
       trigger: true
