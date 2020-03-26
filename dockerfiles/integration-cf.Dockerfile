@@ -1,4 +1,4 @@
-FROM cfbuildpacks/feature-eng-ci:minimal
+FROM cfbuildpacks/feature-eng-ci:go
 
 RUN echo "deb https://packages.cloudfoundry.org/debian stable main" | tee /etc/apt/sources.list.d/cloudfoundry-cli.list \
   && curl --silent https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | apt-key add - \

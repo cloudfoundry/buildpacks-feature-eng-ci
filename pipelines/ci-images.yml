@@ -412,9 +412,9 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: minimal-image
+    - get: go-image
       trigger: true
-      passed: [build-minimal-image]
+      passed: [build-go-image]
     - get: integration-cf-dockerfile
       trigger: true
   - task: build
