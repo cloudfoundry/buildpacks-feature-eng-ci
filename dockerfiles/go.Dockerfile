@@ -22,4 +22,4 @@ RUN curl "https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz" \
   && tar xzf "/usr/local/go${GO_VERSION}.tar.gz" -C /usr/local \
   && rm "/usr/local/go${GO_VERSION}.tar.gz"
 
-ENV PATH="/usr/local/go/bin:${GOPATH}/bin:${PATH}"
+ENV PATH="/usr/local/go/bin:${PATH}"
