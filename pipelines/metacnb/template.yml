@@ -131,6 +131,8 @@ jobs:
     params:
       DOMAIN: buildpacks-gcp.ci.cf-app.com
       ORG: pivotal
+    input_mapping:
+      lock: environment-lock
   - task: integration-tests
     file: ci/tasks/metacnb/shim/integration/task.yml
   ensure:
