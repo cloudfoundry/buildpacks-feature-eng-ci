@@ -64,6 +64,7 @@ resources:
 
 - name: language-lock
   type: pool
+  icon: lock-open
   source:
     uri: git@github.com:cloudfoundry/public-buildpacks-ci-robots
     branch: master

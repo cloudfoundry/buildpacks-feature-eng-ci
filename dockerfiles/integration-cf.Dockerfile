@@ -5,4 +5,5 @@ RUN echo "deb https://packages.cloudfoundry.org/debian stable main" | tee /etc/a
   && apt-get -qqy update \
   && apt-get -qqy install \
     cf-cli \
+    unzip \
   && apt-get clean
