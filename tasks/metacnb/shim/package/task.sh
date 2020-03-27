@@ -38,8 +38,9 @@ function build::setup() {
 function buildpack::package() {
   util::print::info "[task] * packaging buildpack"
 
-  local version cached_flag
-  version="$(cut -d'-' -f1 "${VERSION_DIR}/version")"
+  local rc_version final_version cached_flag
+  rc_version="$(cat "${VERSION_DIR}/version")"
+  final_version="$(echo "${rc_version}" | cut -d'-' -f1)"
   cached_flag=""
 
   if [[ -n "${CACHED}" ]]; then
@@ -48,12 +49,12 @@ function buildpack::package() {
 
   pushd "${BUILD_DIR}" > /dev/null || return
     "${CNB2CF_DIR}/build/cnb2cf" package \
-      --version "${version}" \
+      --version "${final_version}" \
       --stack "cflinuxfs3" \
       "${cached_flag}"
   popd > /dev/null || return
 
-  mv "${BUILD_DIR}/"*"-v${version}.zip" "${SHIMMED_BUILDPACK_DIR}/${LANGUAGE}-buildpack-v${version}.zip"
+  mv "${BUILD_DIR}/"*"-v${final_version}.zip" "${SHIMMED_BUILDPACK_DIR}/${LANGUAGE}-buildpack-v${rc_version}.zip"
 }
 
 main "${@}"
