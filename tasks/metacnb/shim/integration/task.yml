@@ -1,0 +1,22 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: cfbuildpacks/feature-eng-ci
+    tag: integration-cf
+
+inputs:
+  - name: ci
+  - name: space
+  - name: version
+  - name: buildpack-acceptance-tests
+  - name: shimmed-buildpack
+
+run:
+  path: ci/tasks/metacnb/shim/integration/task.sh
+
+params:
+  LANGUAGE:
+  CACHED:

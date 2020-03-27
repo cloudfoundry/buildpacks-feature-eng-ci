@@ -135,6 +135,8 @@ jobs:
       lock: environment-lock
   - task: integration-tests
     file: ci/tasks/metacnb/shim/integration/task.yml
+    params:
+      LANGUAGE: #@ data.values.buildpack
   ensure:
     in_parallel:
     - task: delete-space
