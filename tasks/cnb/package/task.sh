@@ -52,6 +52,8 @@ function release::prepare() {
     --since "$(cat "${RELEASE_DIR}/commit_sha")" \
     > "${ARTIFACTS_DIR}/body"
 
+  echo "" >> "${ARTIFACTS_DIR}/body"
+
   jam summarize \
     --buildpack "${ARTIFACTS_DIR}/"*".tgz" \
     --format markdown \
