@@ -62,8 +62,8 @@ jobs:
     file: ci/tasks/cnb2cf/integration/task.yml
   ensure:
     in_parallel:
-      - task: delete-space
-        file: ci/tasks/cf/delete-space/task.yml
-      - put: lock
-        params:
-          release: lock
+    - task: delete-space
+      file: ci/tasks/cf/delete-space/task.yml
+    - put: lock
+      params:
+        release: lock

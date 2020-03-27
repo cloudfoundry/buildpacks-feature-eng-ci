@@ -39,11 +39,44 @@ resources:
 
 - name: shimmed-buildpack
   type: s3
+  icon: file-code
   source:
     bucket: buildpack-release-candidates
     regexp: "shims/(@= data.values.buildpack @)/(@= data.values.buildpack @)-buildpack-v(\\d+\\.\\d+\\.\\d+-rc\\.\\d+).zip"
     access_key_id: ((pivotal-offline-buildpacks-s3-access-key))
     secret_access_key: ((pivotal-offline-buildpacks-s3-secret-key))
+
+- name: buildpack-acceptance-tests
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/cloudfoundry/buildpack-acceptance-tests
+    branch: master
+
+- name: environment-lock
+  type: pool
+  icon: lock-open
+  source:
+    uri: git@github.com:cloudfoundry/public-buildpacks-ci-robots.git
+    branch: master
+    private_key: ((public-buildpacks-ci-robots-private-key.private_key))
+    pool: edge-environments
+
+- name: language-lock
+  type: pool
+  source:
+    uri: git@github.com:cloudfoundry/public-buildpacks-ci-robots
+    branch: master
+    pool: edge-shared-environments
+    private_key: ((public-buildpacks-ci-robots-private-key.private_key))
+
+- name: environments
+  type: git
+  icon: cloud-outline
+  source:
+    uri: git@github.com:cloudfoundry/buildpacks-envs.git
+    branch: master
+    private_key: ((buildpacks-envs-private-key.private_key))
 
 jobs:
 - name: package-rc
@@ -68,3 +101,45 @@ jobs:
   - put: version
     params:
       file: version/version
+
+- name: test-rc
+  serial: true
+  public: true
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: buildpack-acceptance-tests
+    - get: environments
+    - get: version
+      passed:
+      - package-rc
+    - get: buildpack
+      passed:
+      - package-rc
+    - put: environment-lock
+      params:
+        acquire: true
+    - put: language-lock
+      params:
+        claim: #@ data.values.buildpack
+    - get: shimmed-buildpack
+      trigger: true
+      passed:
+      - package-rc
+  - task: create-space
+    file: ci/tasks/cf/create-space/task.yml
+    params:
+      DOMAIN: buildpacks-gcp.ci.cf-app.com
+      ORG: pivotal
+  - task: integration-tests
+    file: ci/tasks/metacnb/shim/integration/task.yml
+  ensure:
+    in_parallel:
+    - task: delete-space
+      file: ci/tasks/cf/delete-space/task.yml
+    - put: environment-lock
+      params:
+        release: environment-lock
+    - put: language-lock
+      params:
+        release: language-lock
