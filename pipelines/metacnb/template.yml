@@ -138,6 +138,7 @@ jobs:
     file: ci/tasks/metacnb/shim/integration/task.yml
     params:
       LANGUAGE: #@ data.values.buildpack
+      GIT_TOKEN: ((buildpacks-github-token))
   ensure:
     in_parallel:
     - task: delete-space
