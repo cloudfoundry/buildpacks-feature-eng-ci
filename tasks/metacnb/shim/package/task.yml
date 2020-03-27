@@ -1,0 +1,24 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: cfbuildpacks/feature-eng-ci
+    tag: go
+
+inputs:
+- name: ci
+- name: buildpack
+- name: version
+- name: cnb2cf
+
+outputs:
+- name: shimmed-buildpack
+
+run:
+  path: ci/tasks/metacnb/shim/package/task.sh
+
+params:
+  LANGUAGE:
+  CACHED:

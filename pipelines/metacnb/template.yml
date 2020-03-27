@@ -37,6 +37,14 @@ resources:
     uri: https://github.com/cloudfoundry/cnb2cf
     branch: master
 
+- name: shimmed-buildpack
+  type: s3
+  source:
+    bucket: buildpack-release-candidates
+    regexp: "shims/(@= data.values.buildpack @)/(@= data.values.buildpack @)-buildpack-v(\\d+\\.\\d+\\.\\d+-rc\\.\\d+).zip"
+    access_key_id: ((pivotal-offline-buildpacks-s3-access-key))
+    secret_access_key: ((pivotal-offline-buildpacks-s3-secret-key))
+
 jobs:
 - name: package-rc
   serial: true
@@ -50,8 +58,10 @@ jobs:
     - get: buildpack
       trigger: true
     - get: cnb2cf
-  - task: shim
-    file: ci/tasks/metacnb/shim/task.yml
+  - task: package-shim
+    file: ci/tasks/metacnb/shim/package/task.yml
+    params:
+      LANGUAGE: #@ data.values.buildpack
   - put: shimmed-buildpack
     params:
       file: shimmed-buildpack/*.zip
