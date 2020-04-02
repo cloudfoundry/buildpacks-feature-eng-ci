@@ -7,12 +7,12 @@ RUN echo "deb https://packages.cloudfoundry.org/debian stable main" | tee /etc/a
     cf-cli \
   && apt-get clean
 
-ARG BBL_VERSION=7.6.0
+ARG BBL_VERSION=8.4.0
 RUN curl "https://github.com/cloudfoundry/bosh-bootloader/releases/download/v${BBL_VERSION}/bbl-v${BBL_VERSION}_linux_x86-64" \
   --silent \
   --location \
   --output /usr/local/bin/bbl \
-  && [ 2e81f0560310791d604145b39f0b0c21cfd50d2c314fcd58059ff7a006cf12ca = "$(shasum -a 256 /usr/local/bin/bbl | cut -d' ' -f1)" ] \
+  && [ f1b6529f9a6435b1c47eaaa09060a5cacd40b75b4fef957b771b4be0ff64c06e = "$(shasum -a 256 /usr/local/bin/bbl | cut -d' ' -f1)" ] \
   && chmod +x /usr/local/bin/bbl
 
 
