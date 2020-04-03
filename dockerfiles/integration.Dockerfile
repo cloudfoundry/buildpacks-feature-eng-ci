@@ -29,4 +29,11 @@ RUN curl "https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz" \
    && unzip chromedriver.zip -d /usr/local/bin/ \
    && rm chromedriver.zip
 
+RUN curl -q https://dl-ssl.google.com/linux/linux_signing_key.pub > tmp.pub && cat tmp.pub | apt-key add - && rm tmp.pub
+RUN echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list
+RUN apt-get -qqy update \
+  && apt-get -qqy install \
+    google-chrome-stable \
+  && apt-get clean
+
 ENV PATH="/usr/local/go/bin:${PATH}"
