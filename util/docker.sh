@@ -145,9 +145,9 @@ function util::docker::scratch::allocate() {
     dockerroot="/tmp/docker-root-${rand}"
 
     if [[ ! -e "${loopdevice}" ]]; then
-      util::print::info "[docker]   * creating 10GB scratch file"
+      util::print::info "[docker]   * creating 20GB scratch file"
 
-      dd if=/dev/zero of="${dockerroot}" bs=1024 count=10485760 > /dev/null 2>&1
+      dd if=/dev/zero of="${dockerroot}" bs=1024 count=20971520 > /dev/null 2>&1
 
       util::print::info "[docker]   * creating block device"
       mknod "${loopdevice}" b 7 "${rand}"
@@ -186,7 +186,7 @@ function util::docker::scratch::deallocate() {
     done
   shopt -u nullglob
 
-  util::print::info "[docker]   * deleting 10GB scratch file"
+  util::print::info "[docker]   * deleting 20GB scratch file"
   find /tmp -type f -name 'docker-root-*' -delete
 }
 
