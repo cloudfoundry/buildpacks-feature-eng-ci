@@ -5,7 +5,7 @@ image_resource:
   type: registry-image
   source:
     repository: cfbuildpacks/feature-eng-ci
-    tag: integration
+    tag: integration-cf
 
 inputs:
   - name: ci
