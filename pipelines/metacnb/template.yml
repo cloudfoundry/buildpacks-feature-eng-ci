@@ -180,7 +180,6 @@ jobs:
       LANGUAGE: #@ data.values.buildpack
   - put: release
     params:
-      body: artifacts/body
       commitish: artifacts/commitish
       name: artifacts/name
       tag: artifacts/tag
@@ -189,4 +188,4 @@ jobs:
         - artifacts/*.SHA256SUM.txt
   - put: version
     params:
-      file: version/version
+      bump: patch
