@@ -1,0 +1,19 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: cfbuildpacks/feature-eng-ci
+    tag: go
+
+inputs:
+- name: ci
+- name: occam
+- name: version
+
+outputs:
+- name: artifacts
+
+run:
+  path: ci/tasks/occam/package/task.sh

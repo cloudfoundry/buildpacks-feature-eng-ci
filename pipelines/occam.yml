@@ -1,9 +1,9 @@
 resources:
-- name: packit
+- name: occam
   type: git
   icon: github-circle
   source:
-    uri: https://github.com/cloudfoundry/packit
+    uri: https://github.com/cloudfoundry/occam
     branch: master
 
 - name: ci
@@ -13,7 +13,7 @@ resources:
     uri: https://github.com/cloudfoundry/buildpacks-feature-eng-ci
     branch: master
     paths:
-    - tasks/packit/*
+    - tasks/occam/*
     - util/*
 
 - name: version
@@ -23,7 +23,7 @@ resources:
     initial_version: 0.0.0
     driver: gcs
     bucket: artifacts.cf-buildpacks.appspot.com
-    key: "packit-versions/packit-version"
+    key: "occam-versions/occam-version"
     json_key: ((gcp-service-account-key))
 
 - name: release
@@ -31,7 +31,7 @@ resources:
   icon: package-variant-closed
   source:
     user: cloudfoundry
-    repository: packit
+    repository: occam
     access_token: ((buildpacks-github-token))
 
 jobs:
@@ -39,29 +39,27 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: packit
+    - get: occam
       trigger: true
   - task: tests
-    file: ci/tasks/packit/tests/task.yml
+    file: ci/tasks/occam/tests/task.yml
 
 - name: release
   plan:
   - in_parallel:
     - get: ci
-    - get: packit
+    - get: occam
       passed: [tests]
     - get: version
       params:
         bump: patch
   - task: package
-    file: ci/tasks/packit/package/task.yml
+    file: ci/tasks/occam/package/task.yml
   - put: release
     params:
       name: artifacts/name
       tag: artifacts/tag
       commitish: artifacts/commitish
-      globs:
-        - artifacts/jam-*
   - put: version
     params:
       file: version/version
