@@ -136,6 +136,7 @@ jobs:
       lock: environment-lock
   - task: integration-tests
     file: ci/tasks/metacnb/shim/integration/task.yml
+    privileged: true
     params:
       LANGUAGE: #@ data.values.buildpack
       GIT_TOKEN: ((buildpacks-github-token))
