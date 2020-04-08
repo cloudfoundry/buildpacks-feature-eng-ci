@@ -168,6 +168,8 @@ jobs:
     - get: version
       params:
         bump: final
+      passed:
+      - test-rc
     - get: buildpack
       passed:
       - test-rc
