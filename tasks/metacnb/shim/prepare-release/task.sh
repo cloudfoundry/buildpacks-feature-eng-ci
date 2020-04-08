@@ -32,7 +32,7 @@ function release::prepare() {
   local zipfile
   zipfile="${ARTIFACTS_DIR}/${LANGUAGE}-cnb-cf-v${version}.zip"
 
-  cp "${SHIMMED_BUILDPACK_DIR}"*.zip "${zipfile}"
+  cp "${SHIMMED_BUILDPACK_DIR}"/*.zip "${zipfile}"
   shasum -a 256 "${zipfile}" | awk '{print $1}' > "${ARTIFACTS_DIR}/${LANGUAGE}-cnb-cf-v${version}.SHA256SUM.txt"
 }
 

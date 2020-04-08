@@ -79,6 +79,14 @@ resources:
     branch: master
     private_key: ((buildpacks-envs-private-key.private_key))
 
+- name: release
+  type: github-release
+  icon: package-variant-closed
+  source:
+    user: cloudfoundry
+    repository: "(@= data.values.buildpack @)-cnb"
+    access_token: ((buildpacks-github-token))
+
 jobs:
 - name: package-rc
   serial: true
@@ -157,14 +165,15 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: release
     - get: version
       params:
         bump: patch
     - get: buildpack
-      trigger: true
       passed:
-      - integration-tests
+      - test-rc
+    - get: shimmed-buildpack
+      passed:
+      - test-rc
   - task: prepare
     file: ci/tasks/metacnb/shim/prepare-release/task.yml
     params:
