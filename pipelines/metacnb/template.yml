@@ -150,3 +150,36 @@ jobs:
     - put: language-lock
       params:
         release: language-lock
+
+- name: release
+  public: true
+  serial: true
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: release
+    - get: version
+      params:
+        bump: patch
+    - get: buildpack
+      trigger: true
+      passed:
+      - integration-tests
+  - task: prepare
+    file: ci/tasks/metacnb/shim/prepare-release/task.yml
+    params:
+      LANGUAGE: #@ data.values.buildpack
+      TRACKER_TOKEN: ((pivotal-tracker-api-token))
+      GITHUB_TOKEN: ((buildpacks-github-token))
+  - put: release
+    params:
+      body: artifacts/body
+      commitish: artifacts/commitish
+      name: artifacts/name
+      tag: artifacts/tag
+      globs:
+        - artifacts/*.zip
+        - artifacts/*.SHA256SUM.txt
+  - put: version
+    params:
+      file: version/version
