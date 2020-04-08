@@ -3,6 +3,7 @@ FROM cfbuildpacks/feature-eng-ci:docker
 RUN apt-get -qqy update \
   && apt-get -qqy install \
     btrfs-progs \
+    unzip \
   && apt-get -qqy clean
 
 RUN curl --silent "https://api.github.com/repos/buildpacks/pack/releases/latest" \
