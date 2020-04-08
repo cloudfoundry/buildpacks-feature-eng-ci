@@ -14,6 +14,7 @@ RUN apt-get -qqy update \
     ca-certificates \
     gnupg-agent \
     software-properties-common \
+    btrfs-progs \
   && apt-get -qqy clean \
   && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
   && add-apt-repository \
