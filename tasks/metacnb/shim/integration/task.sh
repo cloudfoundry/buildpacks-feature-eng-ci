@@ -8,12 +8,16 @@ readonly BUILDPACK_ACCEPTANCE_TESTS_DIR="${PWD}/buildpack-acceptance-tests"
 readonly SHIMMED_BUILDPACK_DIR="${PWD}/shimmed-buildpack"
 readonly VERSION_DIR="${PWD}/version"
 
+#shellcheck source=../../../../util/docker.sh
+source "${PWD}/ci/util/docker.sh"
+
 #shellcheck source=../../../../util/print.sh
 source "${PWD}/ci/util/print.sh"
 
 function main() {
-  util::print::title "[task] executing"
+  util::docker::start
 
+  util::print::title "[task] executing"
   space::login
   tests::run
 }
@@ -44,5 +48,11 @@ function tests::run() {
       "${cached_flag}"
   popd > /dev/null || return
 }
+
+function trap::handle() {
+  util::docker::stop
+}
+
+trap "trap::handle" EXIT
 
 main "${@}"
