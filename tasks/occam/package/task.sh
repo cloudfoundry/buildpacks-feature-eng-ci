@@ -25,7 +25,7 @@ function release::prepare() {
   printf "v%s" "${version}" > "${ARTIFACTS_DIR}/name"
   printf "v%s" "${version}" > "${ARTIFACTS_DIR}/tag"
 
-  pushd "${PACKIT_DIR}" > /dev/null || return
+  pushd "${OCCAM_DIR}" > /dev/null || return
     git rev-parse HEAD > "${ARTIFACTS_DIR}/commitish"
   popd > /dev/null || return
 }
