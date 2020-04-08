@@ -21,5 +21,3 @@ run:
 
 params:
   LANGUAGE:
-  TRACKER_TOKEN:
-  GITHUB_TOKEN:

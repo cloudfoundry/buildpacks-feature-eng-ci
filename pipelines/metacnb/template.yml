@@ -167,7 +167,7 @@ jobs:
     - get: ci
     - get: version
       params:
-        bump: patch
+        bump: final
     - get: buildpack
       passed:
       - test-rc
@@ -178,8 +178,6 @@ jobs:
     file: ci/tasks/metacnb/shim/prepare-release/task.yml
     params:
       LANGUAGE: #@ data.values.buildpack
-      TRACKER_TOKEN: ((pivotal-tracker-api-token))
-      GITHUB_TOKEN: ((buildpacks-github-token))
   - put: release
     params:
       body: artifacts/body

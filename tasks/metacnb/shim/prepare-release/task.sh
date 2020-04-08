@@ -37,4 +37,3 @@ function release::prepare() {
 }
 
 main "${@}"
-exit 1
