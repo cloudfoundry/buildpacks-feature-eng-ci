@@ -86,7 +86,6 @@ function pipelines::update() {
     icu-cnb
     nginx-cnb
     nodejs-compat-cnb
-    npm-cnb
     php-compat-cnb
     php-composer-cnb
     php-dist-cnb
@@ -100,6 +99,7 @@ function pipelines::update() {
   )
   paketo_cnb_pipelines=(
     node-engine
+    npm
   )
   metacnb_pipelines=(
     go-cnb
