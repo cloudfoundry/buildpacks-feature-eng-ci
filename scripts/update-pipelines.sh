@@ -99,7 +99,7 @@ function pipelines::update() {
     yarn-install-cnb
   )
   paketo_cnb_pipelines=(
-    node-engine-cnb
+    node-engine
   )
   metacnb_pipelines=(
     go-cnb
@@ -113,11 +113,11 @@ function pipelines::update() {
   done
 
   for name in "${cloudfoundry_cnb_pipelines[@]}"; do
-    pipeline::update::cnb "${name}" "${include}" "cloudfoundry"
+    pipeline::update::cnb::legacy "${name}" "${include}"
   done
 
   for name in "${paketo_cnb_pipelines[@]}"; do
-    pipeline::update::cnb "${name}" "${include}" "paketo-buildpacks"
+    pipeline::update::cnb "${name}" "${include}"
   done
 
   for name in "${metacnb_pipelines[@]}"; do
@@ -149,10 +149,30 @@ function pipeline::update::basic() {
 }
 
 function pipeline::update::cnb() {
-  local name include github_org
+  local name include
   name="${1}"
   include="${2}"
-  github_org="${3}"
+
+  if string::contains "${name}" "${include}"; then
+    echo "=== UPDATING ${name} ==="
+    fly --target buildpacks \
+      set-pipeline \
+        --pipeline "${name}" \
+        --config <(
+          ytt \
+            --file "${ROOT_DIR}/pipelines/cnb/template.yml" \
+            --file "${ROOT_DIR}/pipelines/cnb/config.yml" \
+            --data-value buildpack="${name}" \
+            --data-value github_org="paketo-buildpacks"
+        )
+    echo
+  fi
+}
+
+function pipeline::update::cnb::legacy() {
+  local name include
+  name="${1}"
+  include="${2}"
 
   if string::contains "${name}" "${include}"; then
     echo "=== UPDATING ${name} ==="
@@ -164,7 +184,7 @@ function pipeline::update::cnb() {
             --file "${ROOT_DIR}/pipelines/cnb/template.yml" \
             --file "${ROOT_DIR}/pipelines/cnb/config.yml" \
             --data-value buildpack="${name%-cnb}" \
-            --data-value github_org="${github_org}"
+            --data-value suffix="-cnb"
         )
     echo
   fi
@@ -184,7 +204,7 @@ function pipeline::update::metacnb() {
           ytt \
             --file "${ROOT_DIR}/pipelines/metacnb/template.yml" \
             --file "${ROOT_DIR}/pipelines/metacnb/config.yml" \
-            --data-value buildpack="${name%-cnb}"
+            --data-value buildpack="${name}"
         )
     echo
   fi

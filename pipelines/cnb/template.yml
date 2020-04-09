@@ -6,7 +6,7 @@ resources:
   type: git
   icon: github-circle
   source:
-    uri: "git@github.com:(@= data.values.github_org @)/(@= data.values.buildpack @)-cnb.git"
+    uri: "git@github.com:(@= data.values.github_org @)/(@= data.values.buildpack @)(@= data.values.suffix @).git"
     private_key: ((cf-buildpacks-eng-github-ssh-key.private_key))
     branch: master
 
@@ -35,7 +35,7 @@ resources:
   icon: package-variant-closed
   source:
     user: #@ data.values.github_org
-    repository: "(@= data.values.buildpack @)-cnb"
+    repository: "(@= data.values.buildpack @)(@= data.values.suffix @)"
     access_token: ((buildpacks-github-token))
 
 jobs:

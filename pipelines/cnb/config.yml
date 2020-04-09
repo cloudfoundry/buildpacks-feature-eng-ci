@@ -2,3 +2,4 @@
 ---
 buildpack: buildpack-name
 github_org: cloudfoundry
+suffix: ""
