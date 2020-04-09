@@ -2,4 +2,5 @@
 ---
 buildpack: buildpack-name
 github_org: cloudfoundry
+github_token_name: buildpacks-github-token
 suffix: ""

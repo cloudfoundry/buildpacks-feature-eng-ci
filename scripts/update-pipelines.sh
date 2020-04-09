@@ -163,6 +163,7 @@ function pipeline::update::cnb() {
             --file "${ROOT_DIR}/pipelines/cnb/template.yml" \
             --file "${ROOT_DIR}/pipelines/cnb/config.yml" \
             --data-value buildpack="${name}" \
+            --data-value github_token_name="paketo-buildpacks-github-token" \
             --data-value github_org="paketo-buildpacks"
         )
     echo

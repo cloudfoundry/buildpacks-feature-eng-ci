@@ -36,7 +36,7 @@ resources:
   source:
     user: #@ data.values.github_org
     repository: "(@= data.values.buildpack @)(@= data.values.suffix @)"
-    access_token: ((buildpacks-github-token))
+    access_token: "(((@= data.values.github_token_name @)))"
 
 jobs:
 - name: unit-tests
