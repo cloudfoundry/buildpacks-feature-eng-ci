@@ -6,7 +6,7 @@ resources:
   type: git
   icon: github-circle
   source:
-    uri: "git@github.com:cloudfoundry/(@= data.values.buildpack @)-cnb.git"
+    uri: "git@github.com:(@= data.values.github_org @)/(@= data.values.buildpack @)-cnb.git"
     private_key: ((cf-buildpacks-eng-github-ssh-key.private_key))
     branch: master
 
@@ -34,7 +34,7 @@ resources:
   type: github-release
   icon: package-variant-closed
   source:
-    user: cloudfoundry
+    user: #@ data.values.github_org
     repository: "(@= data.values.buildpack @)-cnb"
     access_token: ((buildpacks-github-token))
 

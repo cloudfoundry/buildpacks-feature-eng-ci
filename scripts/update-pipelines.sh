@@ -60,7 +60,7 @@ function pipelines::update() {
   local include
   include="${1}"
 
-  local basic_pipelines cnb_pipelines metacnb_pipelines
+  local basic_pipelines cloudfoundry_cnb_pipelines paketo_cnb_pipelines metacnb_pipelines
   basic_pipelines=(
     builder-images
     ci-images
@@ -71,7 +71,7 @@ function pipelines::update() {
     packit
     slack-invitations
   )
-  cnb_pipelines=(
+  cloudfoundry_cnb_pipelines=(
     bundler-cnb
     conda-cnb
     dep-cnb
@@ -85,7 +85,6 @@ function pipelines::update() {
     httpd-cnb
     icu-cnb
     nginx-cnb
-    node-engine-cnb
     nodejs-compat-cnb
     npm-cnb
     php-compat-cnb
@@ -99,6 +98,9 @@ function pipelines::update() {
     ruby-cnb
     yarn-install-cnb
   )
+  paketo_cnb_pipelines=(
+    node-engine-cnb
+  )
   metacnb_pipelines=(
     go-cnb
     nodejs-cnb
@@ -110,8 +112,12 @@ function pipelines::update() {
     pipeline::update::basic "${name}" "${include}"
   done
 
-  for name in "${cnb_pipelines[@]}"; do
-    pipeline::update::cnb "${name}" "${include}"
+  for name in "${cloudfoundry_cnb_pipelines[@]}"; do
+    pipeline::update::cnb "${name}" "${include}" "cloudfoundry"
+  done
+
+  for name in "${paketo_cnb_pipelines[@]}"; do
+    pipeline::update::cnb "${name}" "${include}" "paketo-buildpacks"
   done
 
   for name in "${metacnb_pipelines[@]}"; do
@@ -143,9 +149,10 @@ function pipeline::update::basic() {
 }
 
 function pipeline::update::cnb() {
-  local name include
+  local name include github_org
   name="${1}"
   include="${2}"
+  github_org="${3}"
 
   if string::contains "${name}" "${include}"; then
     echo "=== UPDATING ${name} ==="
@@ -156,7 +163,8 @@ function pipeline::update::cnb() {
           ytt \
             --file "${ROOT_DIR}/pipelines/cnb/template.yml" \
             --file "${ROOT_DIR}/pipelines/cnb/config.yml" \
-            --data-value buildpack="${name%-cnb}"
+            --data-value buildpack="${name%-cnb}" \
+            --data-value github_org="${github_org}"
         )
     echo
   fi
