@@ -10,7 +10,6 @@ image_resource:
 inputs:
 - name: ci
 - name: lock
-- name: environments
 
 outputs:
 - name: space

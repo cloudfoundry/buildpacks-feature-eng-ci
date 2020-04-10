@@ -4,7 +4,6 @@ set -eu
 set -o pipefail
 
 readonly LOCK_DIR="${PWD}/lock"
-readonly ENVIRONMENTS_DIR="${PWD}/environments"
 readonly SPACE_DIR="${PWD}/space"
 
 #shellcheck source=../../../util/print.sh
@@ -41,7 +40,7 @@ function cf::authenticate() {
   echo "cf api \"${target}\" --skip-ssl-validation" >> "${SPACE_DIR}/login"
 
   local password
-  eval "$(bbl --state-dir "${ENVIRONMENTS_DIR}/${name}" print-env)"
+  eval "$(bbl print-env --metadata-file "lock/metadata-file)"
   password="$(credhub get --name "/bosh-${name}/cf/cf_admin_password" --output-json | jq -r .value)"
 
   cf auth admin "${password}"
