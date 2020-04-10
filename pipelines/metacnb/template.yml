@@ -1,5 +1,11 @@
 #@ load("@ytt:data", "data")
 #@yaml/text-templated-strings
+---
+resource_types:
+- name: pcf-pool
+  type: docker-image
+  source:
+    repository: cftoolsmiths/toolsmiths-envs-resource
 
 resources:
 - name: ci
@@ -9,6 +15,7 @@ resources:
     uri: https://github.com/cloudfoundry/buildpacks-feature-eng-ci
     branch: master
     paths:
+    - tasks/cf
     - tasks/metacnb/*
     - util/*
 
@@ -53,31 +60,13 @@ resources:
     uri: https://github.com/cloudfoundry/buildpack-acceptance-tests
     branch: master
 
-- name: environment-lock
-  type: pool
-  icon: lock-open
+- name: smith-environments-cf-deployment
+  type: pcf-pool
+  tags: [environments.toolsmiths.cf-app.com-shared-vsphere-worker]
   source:
-    uri: git@github.com:cloudfoundry/public-buildpacks-ci-robots.git
-    branch: master
-    private_key: ((public-buildpacks-ci-robots-private-key.private_key))
-    pool: edge-environments
-
-- name: language-lock
-  type: pool
-  icon: lock-open
-  source:
-    uri: git@github.com:cloudfoundry/public-buildpacks-ci-robots
-    branch: master
-    pool: edge-shared-environments
-    private_key: ((public-buildpacks-ci-robots-private-key.private_key))
-
-- name: environments
-  type: git
-  icon: cloud-outline
-  source:
-    uri: git@github.com:cloudfoundry/buildpacks-envs.git
-    branch: master
-    private_key: ((buildpacks-envs-private-key.private_key))
+    api_token: ((toolsmiths-api-token))
+    hostname: environments.toolsmiths.cf-app.com
+    pool_name: cf-deployment
 
 - name: release
   type: github-release
@@ -118,30 +107,27 @@ jobs:
   - in_parallel:
     - get: ci
     - get: buildpack-acceptance-tests
-    - get: environments
     - get: version
       passed:
       - package-rc
     - get: buildpack
       passed:
       - package-rc
-    - put: environment-lock
+    - put: smith-environments-cf-deployment
+      tags: [environments.toolsmiths.cf-app.com-shared-vsphere-worker]
       params:
-        acquire: true
-    - put: language-lock
-      params:
-        claim: #@ data.values.buildpack
+        action: claim
     - get: shimmed-buildpack
       trigger: true
       passed:
       - package-rc
   - task: create-space
     file: ci/tasks/cf/create-space/task.yml
-    params:
-      DOMAIN: buildpacks-gcp.ci.cf-app.com
-      ORG: pivotal
     input_mapping:
-      lock: environment-lock
+      lock: smith-environments-cf-deployment
+    params:
+      DOMAIN: cf-app.com
+      ORG: pivotal
   - task: integration-tests
     file: ci/tasks/metacnb/shim/integration/task.yml
     privileged: true
@@ -152,12 +138,11 @@ jobs:
     in_parallel:
     - task: delete-space
       file: ci/tasks/cf/delete-space/task.yml
-    - put: environment-lock
+    - put: smith-environments-cf-deployment
+      tags: [environments.toolsmiths.cf-app.com-shared-vsphere-worker]
       params:
-        release: environment-lock
-    - put: language-lock
-      params:
-        release: language-lock
+        action: unclaim
+        env_file: smith-environments-cf-deployment/metadata
 
 - name: release
   public: true
