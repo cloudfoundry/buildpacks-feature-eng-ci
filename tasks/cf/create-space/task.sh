@@ -40,7 +40,7 @@ function cf::authenticate() {
   echo "cf api \"${target}\" --skip-ssl-validation" >> "${SPACE_DIR}/login"
 
   local password
-  eval "$(bbl print-env --metadata-file "lock/metadata-file")"
+  eval "$(bbl print-env --metadata-file "lock/metadata")"
   password="$(credhub get --name "/bosh-${name}/cf/cf_admin_password" --output-json | jq -r .value)"
 
   cf auth admin "${password}"
