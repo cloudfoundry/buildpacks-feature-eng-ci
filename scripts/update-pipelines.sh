@@ -205,7 +205,7 @@ function pipeline::update::metacnb() {
           ytt \
             --file "${ROOT_DIR}/pipelines/metacnb/template.yml" \
             --file "${ROOT_DIR}/pipelines/metacnb/config.yml" \
-            --data-value buildpack="${name}"
+            --data-value buildpack="${name%-cnb}"
         )
     echo
   fi
