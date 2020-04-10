@@ -95,11 +95,11 @@ function pipelines::update() {
     python-compat-cnb
     python-runtime-cnb
     ruby-cnb
-    yarn-install-cnb
   )
   paketo_cnb_pipelines=(
     node-engine
     npm
+    yarn-install
   )
   metacnb_pipelines=(
     go-cnb
