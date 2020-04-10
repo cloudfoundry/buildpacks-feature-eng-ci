@@ -80,8 +80,6 @@ function pipelines::update() {
     dotnet-core-conf-cnb
     dotnet-core-runtime-cnb
     dotnet-core-sdk-cnb
-    go-compiler-cnb
-    go-mod-cnb
     httpd-cnb
     icu-cnb
     nginx-cnb
@@ -100,6 +98,8 @@ function pipelines::update() {
     node-engine
     npm
     yarn-install
+    go-compiler
+    go-mod
   )
   metacnb_pipelines=(
     go-cnb
