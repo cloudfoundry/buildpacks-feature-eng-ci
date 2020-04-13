@@ -76,7 +76,6 @@ function pipelines::update() {
     conda-cnb
     dotnet-core-build-cnb
     dotnet-core-conf-cnb
-    dotnet-core-sdk-cnb
     httpd-cnb
     icu-cnb
     nginx-cnb
@@ -95,6 +94,7 @@ function pipelines::update() {
     dep
     dotnet-core-aspnet
     dotnet-core-runtime
+    dotnet-core-sdk
     go-compiler
     go-mod
     node-engine
