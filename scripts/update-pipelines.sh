@@ -77,7 +77,6 @@ function pipelines::update() {
     dotnet-core-aspnet-cnb
     dotnet-core-build-cnb
     dotnet-core-conf-cnb
-    dotnet-core-runtime-cnb
     dotnet-core-sdk-cnb
     httpd-cnb
     icu-cnb
@@ -95,6 +94,7 @@ function pipelines::update() {
   )
   paketo_cnb_pipelines=(
     dep
+    dotnet-core-runtime
     go-compiler
     go-mod
     node-engine
