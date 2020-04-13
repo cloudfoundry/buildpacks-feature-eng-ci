@@ -74,7 +74,6 @@ function pipelines::update() {
   cloudfoundry_cnb_pipelines=(
     bundler-cnb
     conda-cnb
-    dotnet-core-aspnet-cnb
     dotnet-core-build-cnb
     dotnet-core-conf-cnb
     dotnet-core-sdk-cnb
@@ -94,6 +93,7 @@ function pipelines::update() {
   )
   paketo_cnb_pipelines=(
     dep
+    dotnet-core-aspnet
     dotnet-core-runtime
     go-compiler
     go-mod
