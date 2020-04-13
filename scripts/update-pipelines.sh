@@ -77,7 +77,6 @@ function pipelines::update() {
     nodejs-compat-cnb
     php-compat-cnb
     php-composer-cnb
-    php-dist-cnb
     php-web-cnb
     pip-cnb
     pipenv-cnb
@@ -99,6 +98,7 @@ function pipelines::update() {
     nginx
     node-engine
     npm
+    php-dist
     yarn-install
   )
   metacnb_pipelines=(
