@@ -74,7 +74,6 @@ function pipelines::update() {
   cloudfoundry_cnb_pipelines=(
     bundler-cnb
     conda-cnb
-    httpd-cnb
     icu-cnb
     nginx-cnb
     nodejs-compat-cnb
@@ -97,6 +96,7 @@ function pipelines::update() {
     dotnet-core-sdk
     go-compiler
     go-mod
+    httpd
     node-engine
     npm
     yarn-install
