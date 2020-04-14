@@ -135,14 +135,11 @@ jobs:
       LANGUAGE: #@ data.values.buildpack
       GIT_TOKEN: ((buildpacks-github-token))
   ensure:
-    in_parallel:
-    - task: delete-space
-      file: ci/tasks/cf/delete-space/task.yml
-    - put: smith-environments-cf-deployment
-      tags: [environments.toolsmiths.cf-app.com-shared-vsphere-worker]
-      params:
-        action: unclaim
-        env_file: smith-environments-cf-deployment/metadata
+    put: smith-environments-cf-deployment
+    tags: [environments.toolsmiths.cf-app.com-shared-vsphere-worker]
+    params:
+      action: unclaim
+      env_file: smith-environments-cf-deployment/metadata
 
 - name: release
   public: true
