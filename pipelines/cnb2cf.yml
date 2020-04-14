@@ -60,8 +60,7 @@ jobs:
       ORG: pivotal
   - task: integration-tests
     file: ci/tasks/cnb2cf/integration/task.yml
-  ensure:
-    put: smith-environments-cf-deployment
+  - put: smith-environments-cf-deployment
     tags: [environments.toolsmiths.cf-app.com-shared-vsphere-worker]
     params:
       action: unclaim

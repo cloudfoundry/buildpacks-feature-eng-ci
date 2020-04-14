@@ -134,8 +134,7 @@ jobs:
     params:
       LANGUAGE: #@ data.values.buildpack
       GIT_TOKEN: ((buildpacks-github-token))
-  ensure:
-    put: smith-environments-cf-deployment
+  - put: smith-environments-cf-deployment
     tags: [environments.toolsmiths.cf-app.com-shared-vsphere-worker]
     params:
       action: unclaim
