@@ -60,7 +60,7 @@ function pipelines::update() {
   local include
   include="${1}"
 
-  local basic_pipelines cloudfoundry_cnb_pipelines paketo_cnb_pipelines shim_pipelines
+  local basic_pipelines cloudfoundry_cnb_pipelines paketo_cnb_pipelines shim_pipelines metacnb_pipelines
   basic_pipelines=(
     builder-images
     ci-images
@@ -107,6 +107,12 @@ function pipelines::update() {
     php-shim
     python-shim
   )
+  metacnb_pipelines=(
+    dotnet-core
+    go
+    nodejs
+    php
+  )
 
   for name in "${basic_pipelines[@]}"; do
     pipeline::update::basic "${name}" "${include}"
@@ -122,6 +128,10 @@ function pipelines::update() {
 
   for name in "${shim_pipelines[@]}"; do
     pipeline::update::shim "${name}" "${include}"
+  done
+
+  for name in "${metacnb_pipelines[@]}"; do
+    pipeline::update::metacnb "${name}" "${include}"
   done
 }
 
@@ -206,6 +216,26 @@ function pipeline::update::shim() {
             --file "${ROOT_DIR}/pipelines/shim/template.yml" \
             --file "${ROOT_DIR}/pipelines/shim/config.yml" \
             --data-value buildpack="${name%-shim}"
+        )
+    echo
+  fi
+}
+
+function pipeline::update::metacnb() {
+  local name include
+  name="${1}"
+  include="${2}"
+
+  if string::contains "${name}" "${include}"; then
+    echo "=== UPDATING ${name} ==="
+    fly --target buildpacks \
+      set-pipeline \
+        --pipeline "${name}" \
+        --config <(
+          ytt \
+            --file "${ROOT_DIR}/pipelines/metacnb/template.yml" \
+            --file "${ROOT_DIR}/pipelines/metacnb/config.yml" \
+            --data-value buildpack="${name}"
         )
     echo
   fi
