@@ -60,7 +60,7 @@ function pipelines::update() {
   local include
   include="${1}"
 
-  local basic_pipelines cloudfoundry_cnb_pipelines paketo_cnb_pipelines metacnb_pipelines
+  local basic_pipelines cloudfoundry_cnb_pipelines paketo_cnb_pipelines shim_pipelines
   basic_pipelines=(
     builder-images
     ci-images
@@ -101,11 +101,11 @@ function pipelines::update() {
     php-web
     yarn-install
   )
-  metacnb_pipelines=(
-    go-cnb
-    nodejs-cnb
-    php-cnb
-    python-cnb
+  shim_pipelines=(
+    go-shim
+    nodejs-shim
+    php-shim
+    python-shim
   )
 
   for name in "${basic_pipelines[@]}"; do
@@ -120,8 +120,8 @@ function pipelines::update() {
     pipeline::update::cnb "${name}" "${include}"
   done
 
-  for name in "${metacnb_pipelines[@]}"; do
-    pipeline::update::metacnb "${name}" "${include}"
+  for name in "${shim_pipelines[@]}"; do
+    pipeline::update::shim "${name}" "${include}"
   done
 }
 
@@ -191,7 +191,7 @@ function pipeline::update::cnb::legacy() {
   fi
 }
 
-function pipeline::update::metacnb() {
+function pipeline::update::shim() {
   local name include
   name="${1}"
   include="${2}"
@@ -203,9 +203,9 @@ function pipeline::update::metacnb() {
         --pipeline "${name}" \
         --config <(
           ytt \
-            --file "${ROOT_DIR}/pipelines/metacnb/template.yml" \
-            --file "${ROOT_DIR}/pipelines/metacnb/config.yml" \
-            --data-value buildpack="${name%-cnb}"
+            --file "${ROOT_DIR}/pipelines/shim/template.yml" \
+            --file "${ROOT_DIR}/pipelines/shim/config.yml" \
+            --data-value buildpack="${name%-shim}"
         )
     echo
   fi

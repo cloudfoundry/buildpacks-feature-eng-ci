@@ -15,7 +15,7 @@ inputs:
   - name: shimmed-buildpack
 
 run:
-  path: ci/tasks/metacnb/shim/integration/task.sh
+  path: ci/tasks/shim/integration/task.sh
 
 params:
   LANGUAGE:

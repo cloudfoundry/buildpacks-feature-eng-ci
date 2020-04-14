@@ -16,7 +16,7 @@ resources:
     branch: master
     paths:
     - tasks/cf
-    - tasks/metacnb/*
+    - tasks/shim/*
     - util/*
 
 - name: buildpack
@@ -90,7 +90,7 @@ jobs:
       trigger: true
     - get: cnb2cf
   - task: package-shim
-    file: ci/tasks/metacnb/shim/package/task.yml
+    file: ci/tasks/shim/package/task.yml
     params:
       LANGUAGE: #@ data.values.buildpack
   - put: shimmed-buildpack
@@ -129,7 +129,7 @@ jobs:
       DOMAIN: cf-app.com
       ORG: pivotal
   - task: integration-tests
-    file: ci/tasks/metacnb/shim/integration/task.yml
+    file: ci/tasks/shim/integration/task.yml
     privileged: true
     params:
       LANGUAGE: #@ data.values.buildpack
@@ -162,7 +162,7 @@ jobs:
       passed:
       - test-rc
   - task: prepare
-    file: ci/tasks/metacnb/shim/prepare-release/task.yml
+    file: ci/tasks/shim/prepare-release/task.yml
     params:
       LANGUAGE: #@ data.values.buildpack
   - put: release

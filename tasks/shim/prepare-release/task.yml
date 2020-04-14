@@ -5,20 +5,19 @@ image_resource:
   type: registry-image
   source:
     repository: cfbuildpacks/feature-eng-ci
-    tag: go
+    tag: minimal
 
 inputs:
 - name: ci
 - name: buildpack
+- name: shimmed-buildpack
 - name: version
-- name: cnb2cf
 
 outputs:
-- name: shimmed-buildpack
+- name: artifacts
 
 run:
-  path: ci/tasks/metacnb/shim/package/task.sh
+  path: ci/tasks/shim/prepare-release/task.sh
 
 params:
   LANGUAGE:
-  CACHED:
