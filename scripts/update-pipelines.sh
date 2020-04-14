@@ -76,8 +76,6 @@ function pipelines::update() {
     conda-cnb
     nodejs-compat-cnb
     php-compat-cnb
-    php-composer-cnb
-    php-web-cnb
     pip-cnb
     pipenv-cnb
     python-compat-cnb
@@ -98,7 +96,9 @@ function pipelines::update() {
     nginx
     node-engine
     npm
+    php-composer
     php-dist
+    php-web
     yarn-install
   )
   metacnb_pipelines=(
