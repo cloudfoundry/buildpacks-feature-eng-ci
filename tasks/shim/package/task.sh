@@ -9,7 +9,7 @@ readonly CNB2CF_DIR="${PWD}/cnb2cf"
 readonly SHIMMED_BUILDPACK_DIR="${PWD}/shimmed-buildpack"
 readonly VERSION_DIR="${PWD}/version"
 
-#shellcheck source=../../../../util/print.sh
+#shellcheck source=../../../util/print.sh
 source "${PWD}/ci/util/print.sh"
 
 function main() {

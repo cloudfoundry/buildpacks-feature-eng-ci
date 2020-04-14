@@ -8,7 +8,7 @@ readonly VERSION_DIR="${PWD}/version"
 readonly ARTIFACTS_DIR="${PWD}/artifacts"
 readonly SHIMMED_BUILDPACK_DIR="${PWD}/shimmed-buildpack"
 
-#shellcheck source=../../../../util/print.sh
+#shellcheck source=../../../util/print.sh
 source "${PWD}/ci/util/print.sh"
 
 function main() {
