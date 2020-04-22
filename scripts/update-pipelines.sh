@@ -60,7 +60,7 @@ function pipelines::update() {
   local include
   include="${1}"
 
-  local basic_pipelines cloudfoundry_cnb_pipelines paketo_cnb_pipelines shim_pipelines metacnb_pipelines
+  local basic_pipelines cloudfoundry_cnb_pipelines shim_pipelines metacnb_pipelines
   basic_pipelines=(
     builder-images
     ci-images
@@ -82,25 +82,6 @@ function pipelines::update() {
     python-runtime-cnb
     ruby-cnb
   )
-  paketo_cnb_pipelines=(
-    dep
-    dotnet-core-aspnet
-    dotnet-core-build
-    dotnet-core-conf
-    dotnet-core-runtime
-    dotnet-core-sdk
-    go-compiler
-    go-mod
-    httpd
-    icu
-    nginx
-    node-engine
-    npm
-    php-composer
-    php-dist
-    php-web
-    yarn-install
-  )
   shim_pipelines=(
     go-shim
     nodejs-shim
@@ -120,10 +101,6 @@ function pipelines::update() {
 
   for name in "${cloudfoundry_cnb_pipelines[@]}"; do
     pipeline::update::cnb::legacy "${name}" "${include}"
-  done
-
-  for name in "${paketo_cnb_pipelines[@]}"; do
-    pipeline::update::cnb "${name}" "${include}"
   done
 
   for name in "${shim_pipelines[@]}"; do
