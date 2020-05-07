@@ -72,7 +72,6 @@ function pipelines::update() {
     slack-invitations
   )
   cloudfoundry_cnb_pipelines=(
-    bundler-cnb
     conda-cnb
     nodejs-compat-cnb
     php-compat-cnb
@@ -80,7 +79,6 @@ function pipelines::update() {
     pipenv-cnb
     python-compat-cnb
     python-runtime-cnb
-    ruby-cnb
   )
   shim_pipelines=(
     go-shim
