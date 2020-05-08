@@ -67,7 +67,6 @@ function pipelines::update() {
     cnb2cf
     feller
     interrupt-bot
-    occam
     packit
     slack-invitations
   )
