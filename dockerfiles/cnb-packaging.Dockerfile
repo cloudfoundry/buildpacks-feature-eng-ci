@@ -14,7 +14,7 @@ RUN curl "https://api.github.com/repos/pivotal/feller/releases/latest" \
       --output /usr/local/bin/feller \
     && chmod +x /usr/local/bin/feller
 
-RUN curl --silent "https://api.github.com/repos/cloudfoundry/packit/releases/latest" \
+RUN curl --silent "https://api.github.com/repos/paketo-buildpacks/packit/releases/latest" \
     | jq -r '.assets[] | .browser_download_url | select(contains("linux"))' \
     | xargs curl --silent --location --output /usr/local/bin/jam \
     && chmod +x /usr/local/bin/jam
