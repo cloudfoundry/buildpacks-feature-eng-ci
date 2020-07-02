@@ -36,7 +36,7 @@ function cf::deploy() {
       -o "${PWD}/operations/scale-to-one-az.yml" \
       -o "${PWD}/operations/windows2019-cell.yml" \
       -o "${PWD}/operations/use-latest-windows2019-stemcell.yml" \
-      -o "${PWD}/operations/use-online-windows2019fs"
+      -o "${PWD}/operations/use-online-windows2019fs.yml"
     popd > /dev/null
 }
 
