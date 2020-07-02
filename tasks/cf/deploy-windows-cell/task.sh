@@ -24,12 +24,12 @@ function cf::deploy() {
 
   local version name
   version="$(jq -r '.["cf-deployment_version"]' < ${PWD}/lock/metadata)"
-  name="$(cat ${PWD}/lock/metadata)"
+  name="$(cat ${PWD}/lock/name)"
 
   pushd "${PWD}/cf-deployment" > /dev/null
     git checkout "${version}"
 
-    bosh -d cf deploy "${PWD}/cf-deployment.yml" \
+    bosh -n -d cf deploy "${PWD}/cf-deployment.yml" \
       -v system_domain="${name}.cf-app.com" \
       -o "${PWD}/operations/experimental/fast-deploy-with-downtime-and-danger.yml" \
       -o "${PWD}/operations/use-compiled-releases.yml" \
