@@ -41,17 +41,17 @@ function cf::deploy() {
 	name="$(cat ${PWD}/lock/name)"
 
 	pushd "${PWD}/cf-deployment" > /dev/null
-	git checkout "${version}"
+		git checkout "${version}"
 
-	bosh -n -d cf deploy "${PWD}/cf-deployment.yml" \
-		-v system_domain="${name}.cf-app.com" \
-		-o "${PWD}/operations/experimental/fast-deploy-with-downtime-and-danger.yml" \
-		-o "${PWD}/operations/use-compiled-releases.yml" \
-		-o "${PWD}/operations/scale-to-one-az.yml" \
-		-o "${PWD}/operations/windows2019-cell.yml" \
-		-o "${PWD}/operations/use-latest-windows2019-stemcell.yml" \
-		-o "${PWD}/operations/use-online-windows2019fs.yml" \
-		-o "${PWD}/operations/experimental/use-compiled-releases-windows.yml"
+		bosh -n -d cf deploy "${PWD}/cf-deployment.yml" \
+			-v system_domain="${name}.cf-app.com" \
+			-o "${PWD}/operations/experimental/fast-deploy-with-downtime-and-danger.yml" \
+			-o "${PWD}/operations/use-compiled-releases.yml" \
+			-o "${PWD}/operations/scale-to-one-az.yml" \
+			-o "${PWD}/operations/windows2019-cell.yml" \
+			-o "${PWD}/operations/use-latest-windows2019-stemcell.yml" \
+			-o "${PWD}/operations/use-online-windows2019fs.yml" \
+			-o "${PWD}/operations/experimental/use-compiled-releases-windows.yml"
 	popd > /dev/null
 }
 
