@@ -11,7 +11,7 @@ function main() {
 
 	director::login
 	stemcell::upload
-	releases::uplaod
+	releases::upload
 	cf::deploy
 }
 
