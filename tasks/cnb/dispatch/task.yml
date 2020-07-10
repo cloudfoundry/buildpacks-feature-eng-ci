@@ -4,14 +4,14 @@ image_resource:
   type: docker-image
   source:
     repository: cfbuildpacks/feature-eng-ci
-    tag: cf
+    tag: minimal
 
 inputs:
-  - name: buildpacks-feature-eng-ci
+  - name: ci
   - name: release
 
 params:
   GIT_TOKEN:
 
 run:
-  path: buildpacks-feature-eng-ci/tasks/cnb/dispatch/task.sh
+  path: ci/tasks/cnb/dispatch/task.sh
