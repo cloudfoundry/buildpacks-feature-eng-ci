@@ -1,0 +1,16 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: cfbuildpacks/feature-eng-ci
+    tag: cf
+
+inputs:
+  - name: ci
+  - name: cf-deployment
+  - name: lock
+
+run:
+  path: ci/tasks/cf/scale-up-api-and-diego-cell/task.sh
