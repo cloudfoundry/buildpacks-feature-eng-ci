@@ -4,7 +4,7 @@ RUN apk add --no-progress --no-cache \
   tzdata \
   curl
 
-ARG DELEGATEBOT_VERSION=0.9.0
+ARG DELEGATEBOT_VERSION=0.11.0
 RUN curl \
   https://github.com/dpb587/slack-delegate-bot/releases/download/v$DELEGATEBOT_VERSION/delegatebot-$DELEGATEBOT_VERSION-linux-amd64 \
     --silent \
