@@ -91,11 +91,4 @@ function cf::space::create() {
   echo "export SPACE=${space}" > "${SPACE_DIR}/variables"
 }
 
-function util::exit() {
-  echo "Will exit..."
-  sleep 300
-}
-
-trap util::exit EXIT
-
 main "${@}"
