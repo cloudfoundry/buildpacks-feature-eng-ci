@@ -1,13 +1,10 @@
 FROM cfbuildpacks/feature-eng-ci:minimal
 
 RUN echo "deb https://packages.cloudfoundry.org/debian stable main" | tee /etc/apt/sources.list.d/cloudfoundry-cli.list \
-  && echo "deb http://apt.starkandwayne.com stable main" |  tee /etc/apt/sources.list.d/starkandwayne.list \
-  && curl --silent --location "https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key" | apt-key add - \
-  && curl --silent --location "https://raw.githubusercontent.com/starkandwayne/homebrew-cf/master/public.key" | apt-key add - \
+  && curl --silent https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | apt-key add - \
   && apt-get -qqy update \
   && apt-get -qqy install \
     cf-cli \
-    om \
   && apt-get clean
 
 ARG BBL_VERSION=8.4.0
