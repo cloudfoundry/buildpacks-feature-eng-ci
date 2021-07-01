@@ -30,18 +30,44 @@ LOGIN
 function cf::authenticate() {
   util::print::info "[task] * authenticating with CF environment"
 
-  local lock name target
+  local lock name target environment_type
   lock="$(cat "${LOCK_DIR}/name")"
   name="${lock//[[:digit:]]/}"
-  target="api.${name}.${DOMAIN}"
+
+  environment_type="cf"
+  if [[ "$(jq -r .ops_manager "${LOCK_DIR}/metadata")" != "null" ]]; then
+    environment_type="pcf"
+  fi
+
+  if [[ "${environment_type}" == "pcf" ]]; then
+    target="api.sys.${name}.${DOMAIN}"
+  else
+    target="api.${name}.${DOMAIN}"
+  fi
 
   cf api "${target}" --skip-ssl-validation
 
   echo "cf api \"${target}\" --skip-ssl-validation" >> "${SPACE_DIR}/login"
 
   local password
-  eval "$(bbl print-env --metadata-file "lock/metadata")"
-  password="$(credhub get --name "/bosh-${name}/cf/cf_admin_password" --output-json | jq -r .value)"
+  if [[ "${environment_type}" == "pcf" ]]; then
+    password="$(
+      om \
+        --target "https://pcf.${name}.cf-app.com" \
+        --username pivotalcf \
+        --password "$(jq -r .ops_manager.password "${LOCK_DIR}/metadata")" \
+        --skip-ssl-validation \
+        credentials \
+        --product-name cf \
+        --credential-reference .uaa.admin_credentials \
+        --format json \
+      | jq -r .password
+    )"
+
+  else
+    eval "$(bbl print-env --metadata-file "${LOCK_DIR}/metadata")"
+    password="$(credhub get --name "/bosh-${name}/cf/cf_admin_password" --output-json | jq -r .value)"
+  fi
 
   cf auth admin "${password}"
 
