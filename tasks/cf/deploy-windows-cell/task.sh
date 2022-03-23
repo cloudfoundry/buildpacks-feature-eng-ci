@@ -36,8 +36,11 @@ function releases::upload() {
 function cf::deploy() {
 	util::print::info "[task] * deploying a windows cell"
 
-	local version name
-	version="$(jq -r '.["cf-deployment_version"]' < ${PWD}/lock/metadata)"
+  # Since we are getting the latest stemcell above, let's also use the latest cf-deployment
+  # local version
+  # version="$(jq -r '.["cf-deployment_version"]' < ${PWD}/lock/metadata)"
+
+	local name
 	name="$(cat ${PWD}/lock/name)"
 
 	pushd "${PWD}/cf-deployment" > /dev/null
