@@ -9,10 +9,22 @@ source "${PWD}/ci/util/print.sh"
 function main() {
 	util::print::title "[task] executing"
 
+	cfd::checkout
 	director::login
 	stemcell::upload
 	releases::upload
 	cf::deploy
+}
+
+function cfd::checkout() {
+  local version
+  version="$(jq -r '.["cf-deployment_version"]' < ${PWD}/lock/metadata)"
+  echo "Toolsmith env is on cf-deployment version ${version}"
+
+	pushd "${PWD}/cf-deployment" > /dev/null
+		echo "Checking out cf-deployment version ${version}"
+		git checkout "${version}"
+	popd > /dev/null
 }
 
 function director::login() {
@@ -36,15 +48,10 @@ function releases::upload() {
 function cf::deploy() {
 	util::print::info "[task] * deploying a windows cell"
 
-  local version
-  version="$(jq -r '.["cf-deployment_version"]' < ${PWD}/lock/metadata)"
-
 	local name
 	name="$(cat ${PWD}/lock/name)"
 
 	pushd "${PWD}/cf-deployment" > /dev/null
-		git checkout "${version}"
-
 		bosh -n -d cf deploy "${PWD}/cf-deployment.yml" \
 			-v system_domain="${name}.cf-app.com" \
 			-o "${PWD}/operations/experimental/fast-deploy-with-downtime-and-danger.yml" \
