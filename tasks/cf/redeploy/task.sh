@@ -13,9 +13,9 @@ function main() {
 	util::print::title "[task] executing"
 
 	cfd::checkout
+	director::login
 	stemcell::upload
 	releases::upload
-	director::login
 	cf::deploy
 }
 
