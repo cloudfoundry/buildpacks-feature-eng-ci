@@ -60,37 +60,38 @@ function releases::upload() {
 function cf::deploy() {
 	util::print::info "[task] * deploying"
 
-	local name operations arguments
+	local name
 	name="$(cat "${PWD}/lock/name")"
 
-  operations=(
-    "${PWD}/operations/experimental/fast-deploy-with-downtime-and-danger.yml" \
-    "${PWD}/operations/use-compiled-releases.yml" \
-    "${PWD}/operations/scale-to-one-az.yml" \
-    "${PWD}/operations/disable-dynamic-asgs.yml" \
-  )
-
-  if [[ -n "${DEPLOY_WINDOWS_CELL}" ]]; then
-    operations+=(
-      "${PWD}/operations/windows2019-cell.yml" \
-      "${PWD}/operations/use-latest-windows2019-stemcell.yml" \
-      "${PWD}/operations/use-online-windows2019fs.yml" \
-      "${PWD}/operations/experimental/use-compiled-releases-windows.yml"
-    )
-  fi
-
-  if [[ -n "${SCALE_DIEGO_CELLS}" ]]; then
-    operations+=(
-			"${TASKDIR}/operations/scale-api-and-diego-cells.yml"
-    )
-  fi
-
-  arguments=()
-  for operation in "${operations[@]}"; do
-    arguments+=(-o "${operation}")
-  done
-
 	pushd "${PWD}/cf-deployment" > /dev/null
+    local operations arguments
+    operations=(
+      "${PWD}/operations/experimental/fast-deploy-with-downtime-and-danger.yml" \
+      "${PWD}/operations/use-compiled-releases.yml" \
+      "${PWD}/operations/scale-to-one-az.yml" \
+      "${PWD}/operations/disable-dynamic-asgs.yml" \
+    )
+
+    if [[ -n "${DEPLOY_WINDOWS_CELL}" ]]; then
+      operations+=(
+        "${PWD}/operations/windows2019-cell.yml" \
+        "${PWD}/operations/use-latest-windows2019-stemcell.yml" \
+        "${PWD}/operations/use-online-windows2019fs.yml" \
+        "${PWD}/operations/experimental/use-compiled-releases-windows.yml"
+      )
+    fi
+
+    if [[ -n "${SCALE_DIEGO_CELLS}" ]]; then
+      operations+=(
+        "${TASKDIR}/operations/scale-api-and-diego-cells.yml"
+      )
+    fi
+
+    arguments=()
+    for operation in "${operations[@]}"; do
+      arguments+=(-o "${operation}")
+    done
+
 		bosh -n -d cf deploy "${PWD}/cf-deployment.yml" \
 			-v system_domain="${name}.cf-app.com" \
       "${arguments[@]}"
