@@ -1,89 +1,89 @@
 ---
 resources:
-- name: feller
-  type: git
-  icon: github-circle
-  source:
-    uri: git@github.com:pivotal/feller.git
-    branch: master
-    private_key: ((feller-private-key.private_key))
+  - name: feller
+    type: git
+    icon: github
+    source:
+      uri: git@github.com:pivotal/feller.git
+      branch: master
+      private_key: ((feller-private-key.private_key))
 
-- name: ci
-  type: git
-  icon: github-circle
-  source:
-    uri: https://github.com/cloudfoundry/buildpacks-feature-eng-ci
-    branch: master
-    paths:
-    - tasks/feller/*
-    - util/*
+  - name: ci
+    type: git
+    icon: github
+    source:
+      uri: https://github.com/cloudfoundry/buildpacks-feature-eng-ci
+      branch: master
+      paths:
+        - tasks/feller/*
+        - util/*
 
-- name: version
-  type: semver
-  icon: tag
-  source:
-    initial_version: 0.0.0
-    driver: gcs
-    bucket: artifacts.cf-buildpacks.appspot.com
-    key: "feller-versions/feller-version"
-    json_key: ((gcp-service-account-key))
+  - name: version
+    type: semver
+    icon: tag
+    source:
+      initial_version: 0.0.0
+      driver: gcs
+      bucket: artifacts.cf-buildpacks.appspot.com
+      key: "feller-versions/feller-version"
+      json_key: ((gcp-service-account-key))
 
-- name: release
-  type: github-release
-  icon: package-variant-closed
-  source:
-    user: pivotal
-    repository: feller
-    access_token: ((pivotal-github-token))
+  - name: release
+    type: github-release
+    icon: package-variant-closed
+    source:
+      user: pivotal
+      repository: feller
+      access_token: ((pivotal-github-token))
 
-- name: once-a-day
-  type: time
-  icon: alarm
-  source:
-    start: 8:00 AM
-    stop: 9:00 AM
-    location: America/New_York
+  - name: once-a-day
+    type: time
+    icon: alarm
+    source:
+      start: 8:00 AM
+      stop: 9:00 AM
+      location: America/New_York
 
 jobs:
-- name: tests
-  plan:
-  - in_parallel:
-    - get: ci
-    - get: feller
-      trigger: true
-  - task: tests
-    file: ci/tasks/feller/tests/task.yml
+  - name: tests
+    plan:
+      - in_parallel:
+          - get: ci
+          - get: feller
+            trigger: true
+      - task: tests
+        file: ci/tasks/feller/tests/task.yml
 
-- name: release
-  plan:
-  - in_parallel:
-    - get: ci
-    - get: feller
-      passed: [tests]
-    - get: version
-      params:
-        bump: patch
-  - task: package
-    file: ci/tasks/feller/package/task.yml
-  - put: release
-    params:
-      name: artifacts/name
-      tag: artifacts/tag
-      globs:
-        - artifacts/feller-*
-  - put: version
-    params:
-      file: version/version
+  - name: release
+    plan:
+      - in_parallel:
+          - get: ci
+          - get: feller
+            passed: [ tests ]
+          - get: version
+            params:
+              bump: patch
+      - task: package
+        file: ci/tasks/feller/package/task.yml
+      - put: release
+        params:
+          name: artifacts/name
+          tag: artifacts/tag
+          globs:
+            - artifacts/feller-*
+      - put: version
+        params:
+          file: version/version
 
-- name: mark-stale
-  plan:
-  - in_parallel:
-    - get: ci
-    - get: once-a-day
-      trigger: true
-  - task: run
-    file: ci/tasks/feller/mark-stale/task.yml
-    params:
-      TRACKER_PROJECT: 1042066
-      TRACKER_TOKEN: ((pivotal-tracker-api-token))
-      GITHUB_TOKEN: ((buildpacks-github-token))
+  - name: mark-stale
+    plan:
+      - in_parallel:
+          - get: ci
+          - get: once-a-day
+            trigger: true
+      - task: run
+        file: ci/tasks/feller/mark-stale/task.yml
+        params:
+          TRACKER_PROJECT: 1042066
+          TRACKER_TOKEN: ((pivotal-tracker-api-token))
+          GITHUB_TOKEN: ((buildpacks-github-token))

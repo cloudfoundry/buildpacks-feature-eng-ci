@@ -2,7 +2,7 @@
 resources:
 - name: ci
   type: git
-  icon: github-circle
+  icon: github
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
@@ -106,7 +106,7 @@ resources:
 
 - name: minimal-dockerfile
   type: git
-  icon: github-circle
+  icon: github
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
@@ -115,7 +115,7 @@ resources:
 
 - name: go-dockerfile
   type: git
-  icon: github-circle
+  icon: github
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
@@ -124,7 +124,7 @@ resources:
 
 - name: docker-dockerfile
   type: git
-  icon: github-circle
+  icon: github
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
@@ -133,7 +133,7 @@ resources:
 
 - name: gcloud-dockerfile
   type: git
-  icon: github-circle
+  icon: github
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
@@ -142,7 +142,7 @@ resources:
 
 - name: buildpackage-dockerfile
   type: git
-  icon: github-circle
+  icon: github
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
@@ -151,7 +151,7 @@ resources:
 
 - name: integration-dockerfile
   type: git
-  icon: github-circle
+  icon: github
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
@@ -160,7 +160,7 @@ resources:
 
 - name: integration-cf-dockerfile
   type: git
-  icon: github-circle
+  icon: github
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
@@ -169,7 +169,7 @@ resources:
 
 - name: feller-dockerfile
   type: git
-  icon: github-circle
+  icon: github
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
@@ -178,7 +178,7 @@ resources:
 
 - name: cnb-packaging-dockerfile
   type: git
-  icon: github-circle
+  icon: github
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
@@ -187,7 +187,7 @@ resources:
 
 - name: cf-dockerfile
   type: git
-  icon: github-circle
+  icon: github
   source:
     uri: https://github.com/cloudfoundry/buildpack-feature-eng-ci
     branch: master
