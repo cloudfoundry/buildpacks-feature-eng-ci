@@ -73,7 +73,7 @@ function releases::cflinuxfs4::setup() {
         --silent \
       | jq -r -S .tag_name
   )"
-  bosh upload-release "https://github.com/cloudfoundry/cflinuxfs4-release/releases/download/v${latest}/cflinuxfs4-${latest}.tgz"
+  bosh upload-release "https://github.com/cloudfoundry/cflinuxfs4-release/releases/download/${latest}/cflinuxfs4-${latest#"v"}.tgz"
 
   cat <<EOF > "${TMPDIR}"/add-cflinuxfs4.yml
 ---
