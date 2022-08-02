@@ -105,7 +105,7 @@ function releases::capi::upload() {
 
   util::print::info "[task] * creating & uploading capi release with cflinuxfs4 lifecycle bundle added"
   git clone https://github.com/cloudfoundry/capi-release
-  STACK=cflinuxfs4 ci/tasks/cf/redeploy/modify_capi_spec.rb
+  STACK=cflinuxfs4 ruby ci/tasks/cf/redeploy/modify_capi_spec.rb
   pushd capi-release
     git submodule update --init --recursive
     bosh create-release --force --tarball "dev_releases/capi/capi-9.9.9.tgz" --name capi --version "9.9.9"
