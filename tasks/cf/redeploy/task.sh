@@ -74,6 +74,7 @@ function releases::cflinuxfs4::setup() {
       | jq -r -S .tag_name
   )"
   bosh upload-release "https://github.com/cloudfoundry/cflinuxfs4-release/releases/download/${latest}/cflinuxfs4-${latest#"v"}.tgz"
+  util::print::info "[task] * uploaded cflinuxfs4 release"
 
   cat <<EOF > "${TMPDIR}"/add-cflinuxfs4.yml
 ---
@@ -81,7 +82,7 @@ function releases::cflinuxfs4::setup() {
   path: /releases/name=cflinuxfs4?
   value:
     name: cflinuxfs4
-    version: ${latest}
+    version: ${latest#"v"}
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/stacks
   value:
@@ -95,6 +96,7 @@ function releases::cflinuxfs4::setup() {
     - cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar
     - cflinuxfs4:/var/vcap/packages/cflinuxfs4/rootfs.tar
 EOF
+  util::print::info "[task] * generated cflinuxfs4 opsfile"
 
 }
 
@@ -109,7 +111,9 @@ function releases::capi::upload() {
   pushd capi-release
     git submodule update --init --recursive
     bosh create-release --force --tarball "dev_releases/capi/capi-9.9.9.tgz" --name capi --version "9.9.9"
+    util::print::info "[task] * created capi release"
     bosh upload-release "dev_releases/capi/capi-9.9.9.tgz"
+    util::print::info "[task] * uploaded capi release"
   popd
 }
 
@@ -149,6 +153,7 @@ function cf::deploy() {
         "${TASKDIR}/operations/cflinuxfs4-rootfs-certs.yml" \
         "${TMPDIR}/add-cflinuxfs4.yml"
       )
+      util::print::info "[task] * added cflinuxfs4 opsfiles to deploy command"
     fi
 
     arguments=()
@@ -156,9 +161,11 @@ function cf::deploy() {
       arguments+=(-o "${operation}")
     done
 
+    util::print::info "[task] * starting deploy command"
 		bosh -n -d cf deploy "${PWD}/cf-deployment.yml" \
 			-v system_domain="${name}.cf-app.com" \
       "${arguments[@]}"
+    util::print::info "[task] * deploy successful"
 	popd > /dev/null
 }
 
