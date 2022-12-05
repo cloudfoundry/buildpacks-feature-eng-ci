@@ -132,6 +132,15 @@ function cf::deploy() {
       "${PWD}/operations/disable-dynamic-asgs.yml" \
     )
 
+    if [[ -n "${ADD_CFLINUXFS4_STACK}" ]]; then
+      operations+=(
+        "${TASKDIR}/operations/use-dev-release-capi.yml" \
+        "${TASKDIR}/operations/cflinuxfs4-rootfs-certs.yml" \
+        "${TMPDIR}/add-cflinuxfs4.yml"
+      )
+      util::print::info "[task] * added cflinuxfs4 opsfiles to deploy command"
+    fi
+
     if [[ -n "${DEPLOY_WINDOWS_CELL}" ]]; then
       operations+=(
         "${PWD}/operations/windows2019-cell.yml" \
@@ -145,15 +154,6 @@ function cf::deploy() {
       operations+=(
         "${TASKDIR}/operations/scale-api-and-diego-cells.yml"
       )
-    fi
-
-    if [[ -n "${ADD_CFLINUXFS4_STACK}" ]]; then
-      operations+=(
-        "${TASKDIR}/operations/use-dev-release-capi.yml" \
-        "${TASKDIR}/operations/cflinuxfs4-rootfs-certs.yml" \
-        "${TMPDIR}/add-cflinuxfs4.yml"
-      )
-      util::print::info "[task] * added cflinuxfs4 opsfiles to deploy command"
     fi
 
     arguments=()
