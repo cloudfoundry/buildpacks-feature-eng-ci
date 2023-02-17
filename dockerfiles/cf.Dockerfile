@@ -26,10 +26,10 @@ RUN curl "https://github.com/cloudfoundry-incubator/credhub-cli/releases/downloa
   && chmod +x /usr/local/bin/credhub \
   && rm /tmp/credhub.tgz
 
-ARG BOSH_VERSION=6.3.0
+ARG BOSH_VERSION=7.1.3
 RUN curl "https://github.com/cloudfoundry/bosh-cli/releases/download/v${BOSH_VERSION}/bosh-cli-${BOSH_VERSION}-linux-amd64" \
   --silent \
   --location \
   --output /usr/local/bin/bosh \
-  && [ 177bf3b65da346b031bdccd39a4495ac89715a41ddd7c207813a22844f49623b = "$(shasum -a 256 /usr/local/bin/bosh | cut -d' ' -f1)" ] \
+  && [ 901f5fedf406c063be521660ae5f7ccd34e034d3f734e0522138bc5bf71f4e80 = "$(shasum -a 256 /usr/local/bin/bosh | cut -d' ' -f1)" ] \
   && chmod +x /usr/local/bin/bosh
