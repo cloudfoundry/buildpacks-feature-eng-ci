@@ -4,8 +4,8 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: cfbuildpacks/feature-eng-ci
-    tag: cf
+    repository: cfbuildpacks/ci
+    tag: latest
 
 inputs:
 - name: ci
