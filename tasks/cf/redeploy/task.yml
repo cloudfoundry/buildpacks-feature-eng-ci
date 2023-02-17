@@ -5,7 +5,7 @@ image_resource:
   type: registry-image
   source:
     repository: cfbuildpacks/ci
-    tag: bbl-8.4
+    tag: latest
 
 inputs:
   - name: ci
